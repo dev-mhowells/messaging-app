@@ -1,23 +1,34 @@
-body {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* body {
   background: red;
-}
+} */
 
-button {
+/* button {
   padding: 0.2em 0.5em;
-}
+} */
 
-textarea {
+/* textarea {
   width: 500px;
   height: 200px;
   resize: none;
-}
+} */
 
-.message-display {
+/* .test {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+} */
+
+/* .message-display {
   width: 500px;
   height: 200px;
   background-color: aliceblue;
   overflow: scroll;
-}
+} */
 
 .message {
   border-radius: 100vh;

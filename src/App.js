@@ -23,12 +23,10 @@ export default function App() {
   });
 
   return (
-    <div>
-      <div>
-        <button onClick={() => googleSignIn()}>sign in</button>
-        <button onClick={() => signOut(auth)}>sign out</button>
-        <Messenger />
-      </div>
+    <div className="bg-sky-200 flex flex-col items-center justify-center h-screen">
+      {/* <button onClick={() => googleSignIn()}>sign in</button>
+        <button onClick={() => signOut(auth)}>sign out</button> */}
+      <Messenger />
     </div>
   );
 }

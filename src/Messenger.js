@@ -55,26 +55,34 @@ export default function Messenger() {
   }
 
   const allMessages = messages.map((message) => (
-    <div className="message">
+    <div className="flex justify-between bg-sky-100">
       <p>{message.message}</p>
-      <button onClick={() => getEditMessage(message.message)}>edit</button>
+      <button
+        className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4"
+        onClick={() => getEditMessage(message.message)}
+      >
+        edit
+      </button>
     </div>
   ));
 
   return (
-    <section className="messenger-main">
-      <div className="message-display">{allMessages}</div>
-      <div className="input-section">
+    <section className="w-1/2 h-3/4 self-start flex flex-col ml-20 gap-5">
+      <div className="flex flex-col gap-1">{allMessages}</div>
+      <div className="flex h-10 justify-between">
         <textarea
-          className="textarea"
+          className="h-10 w-full"
           value={message}
           onChange={handleMessageChange}
         ></textarea>
-        <button className="send-btn" onClick={() => createMessage()}>
+        <button
+          className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4"
+          onClick={() => createMessage()}
+        >
           send
         </button>
       </div>
-      <div contentEditable="true" className="correction-text">
+      <div contentEditable="true" className="h-20 w-40 bg-sky-300 w-full">
         {editMessage}
       </div>
     </section>
