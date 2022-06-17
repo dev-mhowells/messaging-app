@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Text from "./Text.js";
+import Messenger from "./Messenger.js";
 
-function App() {
+import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
+import { auth, provider } from "./firebase-config.js";
+
+// const firestore = firebase.firestore();
+
+function googleSignIn() {
+  signInWithPopup(auth, provider).then((result) => {
+    // The signed-in user info.
+    const user = result.user;
+  });
+}
+
+export default function App() {
+  // authstatechange sets userIn on log in and log out
+  const [user, setUser] = React.useState({});
+
+  onAuthStateChanged(auth, (user) => {
+    setUser(user);
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div>
+        <button onClick={() => googleSignIn()}>sign in</button>
+        <button onClick={() => signOut(auth)}>sign out</button>
+        <Messenger />
+      </div>
     </div>
   );
 }
-
-export default App;
