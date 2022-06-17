@@ -56,9 +56,9 @@ export default function Messenger() {
 
   const allMessages = messages.map((message) => (
     <div className="flex justify-between bg-sky-100">
-      <p>{message.message}</p>
+      <p className="ml-2">{message.message}</p>
       <button
-        className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4"
+        className="bg-sky-700 hover:bg-sky-900 text-white py-1 px-4"
         onClick={() => getEditMessage(message.message)}
       >
         edit
@@ -67,24 +67,54 @@ export default function Messenger() {
   ));
 
   return (
-    <section className="w-1/2 h-3/4 self-start flex flex-col ml-20 gap-5">
-      <div className="flex flex-col gap-1">{allMessages}</div>
-      <div className="flex h-10 justify-between">
-        <textarea
-          className="h-10 w-full"
-          value={message}
-          onChange={handleMessageChange}
-        ></textarea>
-        <button
-          className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4"
-          onClick={() => createMessage()}
-        >
-          send
-        </button>
+    <div className="h-screen w-full flex flex-col mt-10 gap-10 ml-10">
+      <section className="flex justify-between w-1/2">
+        <div className="rounded-full w-12 h-12 bg-sky-900"></div>
+        <h2>Brian Horseman</h2>
+        <h2 className="py-2 px-4 bg-sky-100">30:00</h2>
+      </section>
+      <div className="h-screen w-full flex mt-10 gap-10">
+        <section className="w-1/2 h-3/4 flex flex-col gap-5">
+          <div className="flex gap-5">
+            <div className="rounded-full w-10 h-10 bg-sky-900"></div>
+            <div className="flex flex-col gap-5 w-1/2">{allMessages}</div>
+          </div>
+          <div className="flex h-10 justify-between">
+            <textarea
+              className=" w-full border focus:outline-none border-sky-200 focus:border-sky-300 p-2"
+              value={message}
+              onChange={handleMessageChange}
+            ></textarea>
+            <button
+              className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4"
+              onClick={() => createMessage()}
+            >
+              send
+            </button>
+          </div>
+        </section>
+        <section className="w-2/5 flex flex-col gap-4">
+          <p>Original</p>
+          <div contentEditable="true" className="h-20 bg-sky-100 w-300 p-2">
+            {editMessage}
+          </div>
+          <p>Correction</p>
+          <div
+            contentEditable="true"
+            className="h-20 bg-sky-100 w-300 p-2"
+          ></div>
+          <p>Explanation (optional)</p>
+          <div
+            contentEditable="true"
+            className="h-20 bg-sky-100 w-300 p-2"
+          ></div>
+          <p>Examples (optional)</p>
+          <div
+            contentEditable="true"
+            className="h-20 bg-sky-100 w-300 p-2"
+          ></div>
+        </section>
       </div>
-      <div contentEditable="true" className="h-20 w-40 bg-sky-300 w-full">
-        {editMessage}
-      </div>
-    </section>
+    </div>
   );
 }

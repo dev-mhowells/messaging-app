@@ -23,7 +23,7 @@ export default function App() {
   });
 
   return (
-    <div className="bg-sky-200 flex flex-col items-center justify-center h-screen">
+    <div className="bg-white flex flex-col items-center justify-center h-screen">
       {/* <button onClick={() => googleSignIn()}>sign in</button>
         <button onClick={() => signOut(auth)}>sign out</button> */}
       <Messenger />
