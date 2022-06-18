@@ -11,13 +11,17 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "./firebase-config";
 
-export default function Messenger() {
+export default function Messenger(props) {
   const messagesCollectionRef = collection(db, "messages");
 
   // doesn't work yet
   const q = query(messagesCollectionRef, orderBy("createdAt", "asc"));
 
   const [messages, setMessages] = React.useState([]);
+
+  const eachMessage = messages.map((message) => message);
+  console.log("allmessages", eachMessage);
+  console.log("currentUser", props.user.uid);
 
   React.useEffect(() => {
     onSnapshot(q, (snapshot) => {
@@ -35,11 +39,9 @@ export default function Messenger() {
     await addDoc(messagesCollectionRef, {
       createdAt: serverTimestamp(),
       message: message,
-      //   author: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
+      uid: props.user.uid,
     });
   }
-
-  console.log("MESSAGES", messages);
 
   function handleMessageChange(e) {
     setMessage(e.target.value);
@@ -54,8 +56,14 @@ export default function Messenger() {
     setEditMessage(text);
   }
 
+  console.log("props", props);
+
   const allMessages = messages.map((message) => (
-    <div className="flex justify-between bg-sky-100">
+    <div
+      className={`flex justify-between bg-sky-100 w-1/2 ${
+        message.uid !== auth.currentUser.uid ? "self-end" : "self-start"
+      }`}
+    >
       <p className="ml-2">{message.message}</p>
       <button
         className="bg-sky-700 hover:bg-sky-900 text-white py-1 px-4"
@@ -72,13 +80,18 @@ export default function Messenger() {
         <div className="rounded-full w-12 h-12 bg-sky-900"></div>
         <h2>Brian Horseman</h2>
         <h2 className="py-2 px-4 bg-sky-100">30:00</h2>
+        <button className="py-2 px-4 bg-sky-100" onClick={props.logout}>
+          Log out
+        </button>
       </section>
       <div className="h-screen w-full flex mt-10 gap-10">
         <section className="w-1/2 h-3/4 flex flex-col gap-5">
-          <div className="flex gap-5">
+          {/* <div className="flex gap-5">
             <div className="rounded-full w-10 h-10 bg-sky-900"></div>
             <div className="flex flex-col gap-5 w-1/2">{allMessages}</div>
-          </div>
+          </div> */}
+          <div className="flex flex-col gap-5 w-full ">{allMessages}</div>
+          {/* {allmessages} */}
           <div className="flex h-10 justify-between">
             <textarea
               className=" w-full border focus:outline-none border-sky-200 focus:border-sky-300 p-2"
