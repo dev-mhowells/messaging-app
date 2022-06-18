@@ -1,6 +1,7 @@
 import React from "react";
 import Text from "./Text.js";
 import Messenger from "./Messenger.js";
+import Login from "./Login.js";
 
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { auth, provider } from "./firebase-config.js";
@@ -26,7 +27,8 @@ export default function App() {
     <div className="bg-white flex flex-col items-center justify-center h-screen">
       {/* <button onClick={() => googleSignIn()}>sign in</button>
         <button onClick={() => signOut(auth)}>sign out</button> */}
-      <Messenger />
+      <Login />
+      {/* <Messenger /> */}
     </div>
   );
 }
