@@ -53,7 +53,7 @@ export default function Login(props) {
   //   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 font-poppins">
       <div className="flex flex-col gap-3">
         <h2>Register</h2>
         <label>email</label>

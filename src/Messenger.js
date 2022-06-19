@@ -60,22 +60,17 @@ export default function Messenger(props) {
 
   const allMessages = messages.map((message) => (
     <div
-      className={`flex justify-between bg-sky-100 w-1/2 ${
+      className={`flex justify-between bg-sky-400 w-1/2 rounded-md hover:cursor-pointer ${
         message.uid !== auth.currentUser.uid ? "self-end" : "self-start"
       }`}
+      onClick={() => getEditMessage(message.message)}
     >
-      <p className="ml-2">{message.message}</p>
-      <button
-        className="bg-sky-700 hover:bg-sky-900 text-white py-1 px-4"
-        onClick={() => getEditMessage(message.message)}
-      >
-        edit
-      </button>
+      <p className="ml-2 p-2">{message.message}</p>
     </div>
   ));
 
   return (
-    <div className="h-screen w-full flex flex-col mt-10 gap-10 ml-10">
+    <div className="h-screen w-full flex flex-col mt-5 ml-10 font-poppins">
       <section className="flex justify-between w-1/2">
         <div className="rounded-full w-12 h-12 bg-sky-900"></div>
         <h2>Brian Horseman</h2>
@@ -84,14 +79,9 @@ export default function Messenger(props) {
           Log out
         </button>
       </section>
-      <div className="h-screen w-full flex mt-10 gap-10">
-        <section className="w-1/2 h-3/4 flex flex-col gap-5">
-          {/* <div className="flex gap-5">
-            <div className="rounded-full w-10 h-10 bg-sky-900"></div>
-            <div className="flex flex-col gap-5 w-1/2">{allMessages}</div>
-          </div> */}
-          <div className="flex flex-col gap-5 w-full ">{allMessages}</div>
-          {/* {allmessages} */}
+      <div className="h-full w-full flex mt-5 gap-10 mb-10">
+        <section className="mb-10 w-1/2 h-full flex flex-col justify-end gap-5 border-t-2 border-sky-700">
+          <div className="flex flex-col gap-5 w-full mt-5">{allMessages}</div>
           <div className="flex h-10 justify-between">
             <textarea
               className=" w-full border focus:outline-none border-sky-200 focus:border-sky-300 p-2"
@@ -106,25 +96,28 @@ export default function Messenger(props) {
             </button>
           </div>
         </section>
-        <section className="w-2/5 flex flex-col gap-4">
+        <section className="w-2/5 flex flex-col gap-4 border-t-2 border-sky-700 text-xs">
           <p>Original</p>
-          <div contentEditable="true" className="h-20 bg-sky-100 w-300 p-2">
+          <div
+            contentEditable="true"
+            className="h-20 bg-sky-100 w-300 p-2 rounded-md"
+          >
             {editMessage}
           </div>
           <p>Correction</p>
           <div
             contentEditable="true"
-            className="h-20 bg-sky-100 w-300 p-2"
+            className="h-20 w-300 p-2 border-2 border-sky-700 rounded-md"
           ></div>
           <p>Explanation (optional)</p>
           <div
             contentEditable="true"
-            className="h-20 bg-sky-100 w-300 p-2"
+            className="h-20 w-300 p-2 border-2 border-sky-700 rounded-md"
           ></div>
           <p>Examples (optional)</p>
           <div
             contentEditable="true"
-            className="h-20 bg-sky-100 w-300 p-2"
+            className="h-20 w-300 p-2 border-2 border-sky-700 rounded-md"
           ></div>
         </section>
       </div>
