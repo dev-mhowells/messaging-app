@@ -81,12 +81,19 @@ export default function Messenger(props) {
 
   const allMessages = messages.map((message) => (
     <div
-      className={`flex justify-between bg-sky-400 w-3/5 rounded-md hover:cursor-pointer ${
+      className={`flex flex-col bg-sky-100 w-3/5 rounded-md hover:cursor-pointer ${
         message.uid !== auth.currentUser.uid ? "self-end" : "self-start"
       }`}
-      onClick={() => getEditMessage(message)}
     >
-      <p className="ml-2 p-2">{message.message}</p>
+      <div
+        className={`flex justify-between w-full bg-sky-400 rounded-md hover:cursor-pointer ${
+          message.uid !== auth.currentUser.uid ? "self-end" : "self-start"
+        }`}
+        onClick={() => getEditMessage(message)}
+      >
+        <p className="p-2">{message.message}</p>
+      </div>
+      {message.correction && <p className="p-2">{message.correction}</p>}
     </div>
   ));
 
@@ -126,13 +133,6 @@ export default function Messenger(props) {
             {editMessage.message}
           </div>
           <p>Correction</p>
-          {/* <div
-            contentEditable="true"
-            className="h-20 w-300 p-2 border-2 border-sky-700 rounded-md"
-            onChange={handleCorrectionChange}
-          >
-            {correction}
-          </div> */}
           <textarea
             className="h-20 w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none"
             onChange={handleCorrectionChange}
