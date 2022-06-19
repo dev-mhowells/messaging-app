@@ -10,6 +10,22 @@ export default function Message(props) {
 
   props.message.selected = isSelected;
 
+  const splitWords = props.message.message;
+
+  function splitMessage(message) {
+    splitMessage = message.split(" ");
+    console.log("split!!!", splitMessage);
+    return splitMessage;
+  }
+
+  //   const words = "here are some words to see what happens";
+
+  const splitIntoWords = splitMessage(props.message.message);
+
+  const eachWord = splitIntoWords.map((word) => (
+    <button className="bg-sky-50 py-2 px-4 ml-2">{word}</button>
+  ));
+
   return (
     <div
       className={`flex flex-col bg-sky-100 w-3/5 rounded-md hover:cursor-pointer ${
@@ -22,10 +38,16 @@ export default function Message(props) {
         }  rounded-md hover:cursor-pointer ${
           props.message.uid !== auth.currentUser.uid ? "self-end" : "self-start"
         }`}
-        // onClick={() => props.getEditMessage(props.message)}
-        onClick={() => toggler(isSelected)}
+        onClick={() => {
+          toggler(isSelected);
+          props.getEditMessage(props.message);
+        }}
       >
-        <p className="p-2">{props.message.message}</p>
+        {!props.message.selected ? (
+          <p className="p-2">{props.message.message}</p>
+        ) : (
+          <p className="p-2">{eachWord}</p>
+        )}
       </div>
       {props.message.correction && (
         <p className="p-2">{props.message.correction}</p>

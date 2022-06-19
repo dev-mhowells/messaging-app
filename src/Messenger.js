@@ -1,5 +1,5 @@
 import React from "react";
-import Messages from "./Messages";
+import Message from "./Message";
 import {
   addDoc,
   collection,
@@ -60,14 +60,7 @@ export default function Messenger(props) {
     setCorrection(e.target.value);
   }
 
-  function splitMessage(message) {
-    splitMessage = message.split(" ");
-    console.log("split!!!", splitMessage);
-  }
 
-  const words = "here are some words to see what happens";
-
-  splitMessage(words);
 
   // adds correction text as property to corresponding message object in firebase
   // merge: true prevents update from overwriting entire doc
@@ -99,6 +92,10 @@ export default function Messenger(props) {
   //     );
   //   });
 
+  const allMessages = messages.map((message) => {
+    return <Message getEditMessage={getEditMessage} message={message} />;
+  });
+
   return (
     <div className="h-screen w-full flex flex-col font-poppins">
       <section className="flex justify-between w-1/2 mt-5 ml-10">
@@ -112,7 +109,8 @@ export default function Messenger(props) {
       <div className="h-full w-full flex mt-5 gap-10 mb-10">
         <section className="ml-10 mb-10 w-1/2 h-full flex flex-col justify-end gap-5 border-t-2 border-sky-700">
           <div className="flex flex-col gap-5 w-full mt-5">
-            <Messages getEditMessage={getEditMessage} messages={messages} />
+            {/* <Messages getEditMessage={getEditMessage} messages={messages} /> */}
+            {allMessages}
           </div>
           <div className="flex h-10 justify-between">
             <textarea
