@@ -23,7 +23,7 @@ export default function Message(props) {
   const splitIntoWords = splitMessage(props.message.message);
 
   const eachWord = splitIntoWords.map((word) => (
-    <button className="bg-sky-50 py-2 px-4 ml-2">{word}</button>
+    <button className="bg-sky-50 py-2 px-4 ml-2" onClick={() => props.getSelectedWord(word)}>{word}</button>
   ));
 
   return (
