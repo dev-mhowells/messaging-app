@@ -1,4 +1,5 @@
 import React from "react";
+import Messages from "./Messages";
 import {
   addDoc,
   collection,
@@ -18,14 +19,10 @@ export default function Messenger(props) {
   // doesn't work yet
   const q = query(messagesCollectionRef, orderBy("createdAt", "asc"));
 
-  const [messages, setMessages] = React.useState([]);
-  const [message, setMessage] = React.useState("");
+  const [messages, setMessages] = React.useState([]); // array of message objects from firebase
+  const [message, setMessage] = React.useState(""); // value of messaging input
   const [editMessage, setEditMessage] = React.useState({}); // message to edit object
-  const [correction, setCorrection] = React.useState("");
-
-  const eachMessage = messages.map((message) => message);
-  console.log("allmessages", eachMessage);
-  console.log("currentUser", props.user.uid);
+  const [correction, setCorrection] = React.useState(""); // value of correction textarea input
 
   React.useEffect(() => {
     onSnapshot(q, (snapshot) => {
@@ -33,12 +30,14 @@ export default function Messenger(props) {
         return {
           ...doc.data(),
           id: doc.id,
+          selected: false,
         };
       });
       setMessages(allMessages);
     });
   }, []);
 
+  // uses message state
   async function createMessage() {
     await addDoc(messagesCollectionRef, {
       createdAt: serverTimestamp(),
@@ -52,6 +51,7 @@ export default function Messenger(props) {
     setMessage(e.target.value);
   }
 
+  // gets edited message object from input and sets editMessage state
   function getEditMessage(messageObj) {
     setEditMessage(messageObj);
   }
@@ -60,17 +60,14 @@ export default function Messenger(props) {
     setCorrection(e.target.value);
   }
 
-  function addCorrection(e, messageID) {}
+  function splitMessage(message) {
+    splitMessage = message.split(" ");
+    console.log("split!!!", splitMessage);
+  }
 
-  //   async function getMyDocs() {
-  //     console.log("updated");
-  //     const snapshot = await db.collection("messages").get();
-  //     return snapshot.docs.map((doc) => {
-  //       db.collection("messages")
-  //         .doc(doc.id)
-  //         .update({ myNewField: "fieldValue" });
-  //     });
-  //   }
+  const words = "here are some words to see what happens";
+
+  splitMessage(words);
 
   // adds correction text as property to corresponding message object in firebase
   // merge: true prevents update from overwriting entire doc
@@ -79,23 +76,28 @@ export default function Messenger(props) {
     setDoc(ref, { correction }, { merge: true });
   }
 
-  const allMessages = messages.map((message) => (
-    <div
-      className={`flex flex-col bg-sky-100 w-3/5 rounded-md hover:cursor-pointer ${
-        message.uid !== auth.currentUser.uid ? "self-end" : "self-start"
-      }`}
-    >
-      <div
-        className={`flex justify-between w-full bg-sky-400 rounded-md hover:cursor-pointer ${
-          message.uid !== auth.currentUser.uid ? "self-end" : "self-start"
-        }`}
-        onClick={() => getEditMessage(message)}
-      >
-        <p className="p-2">{message.message}</p>
-      </div>
-      {message.correction && <p className="p-2">{message.correction}</p>}
-    </div>
-  ));
+  //   const allMessages = messages.map((message) => {
+  //     message = { ...message, selected: false };
+
+  //     return (
+  //       <div
+  //         className={`flex flex-col bg-sky-100 w-3/5 rounded-md hover:cursor-pointer ${
+  //           message.uid !== auth.currentUser.uid ? "self-end" : "self-start"
+  //         }`}
+  //       >
+  //         <div
+  //           className={`flex justify-between w-full bg-sky-400 rounded-md hover:cursor-pointer ${
+  //             message.uid !== auth.currentUser.uid ? "self-end" : "self-start"
+  //           }`}
+  //           onClick={() => getEditMessage(message)}
+  //           //   onClick={() => toggler(message.selected)}
+  //         >
+  //           <p className="p-2">{message.message}</p>
+  //         </div>
+  //         {message.correction && <p className="p-2">{message.correction}</p>}
+  //       </div>
+  //     );
+  //   });
 
   return (
     <div className="h-screen w-full flex flex-col font-poppins">
@@ -109,7 +111,9 @@ export default function Messenger(props) {
       </section>
       <div className="h-full w-full flex mt-5 gap-10 mb-10">
         <section className="ml-10 mb-10 w-1/2 h-full flex flex-col justify-end gap-5 border-t-2 border-sky-700">
-          <div className="flex flex-col gap-5 w-full mt-5">{allMessages}</div>
+          <div className="flex flex-col gap-5 w-full mt-5">
+            <Messages getEditMessage={getEditMessage} messages={messages} />
+          </div>
           <div className="flex h-10 justify-between">
             <textarea
               className=" w-full border focus:outline-none border-sky-200 focus:border-sky-300 p-2"
