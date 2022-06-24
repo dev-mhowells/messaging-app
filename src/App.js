@@ -3,6 +3,9 @@ import Text from "./Text.js";
 import Messenger from "./Messenger.js";
 import Login from "./Login.js";
 
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 // import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 // import { auth, provider } from "./firebase-config.js";
 
@@ -13,6 +16,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "./firebase-config";
+import ProtectedRoutes from "./ProtectedRoutes.js";
 
 // --------------------------- GOOGLE LOGIN ----------------------------//
 
@@ -40,11 +44,14 @@ export default function App() {
   const [loginPass, setLoginPass] = React.useState("");
   const [user, setUser] = React.useState({});
 
-  console.log(user);
+  let navigate = useNavigate();
+
+  // console.log(user);
 
   React.useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      user && navigate("/messenger");
     });
   }, []);
 
@@ -55,6 +62,7 @@ export default function App() {
         regEmail,
         regPass
       );
+
       console.log(newUser);
     } catch (error) {
       console.log(error.message);
@@ -69,6 +77,7 @@ export default function App() {
         loginPass
       );
       console.log(newUser);
+      // navigate("/messenger");
     } catch (error) {
       console.log(error.message);
     }
@@ -76,27 +85,37 @@ export default function App() {
 
   async function logout() {
     await signOut(auth);
+    setLoginEmail("");
+    setLoginPass("");
     console.log("logged out", user);
+    navigate("/");
   }
 
   return (
-    <div className="bg-white flex flex-col items-center justify-center h-screen">
-      {/* <button onClick={() => googleSignIn()}>sign in</button>
-        <button onClick={() => signOut(auth)}>sign out</button> */}
-      {!user ? (
-        <Login
-          register={register}
-          login={login}
-          logout={logout}
-          user={user}
-          setRegEmail={setRegEmail}
-          setRegPass={setRegPass}
-          setLoginEmail={setLoginEmail}
-          setLoginPass={setLoginPass}
-        />
-      ) : (
-        <Messenger logout={logout} user={user} />
-      )}
-    </div>
+    // <Router>
+    <Routes>
+      <Route
+        className="bg-white flex flex-col items-center justify-center h-screen"
+        path="/"
+        element={
+          <Login
+            register={register}
+            login={login}
+            logout={logout}
+            user={user}
+            setRegEmail={setRegEmail}
+            setRegPass={setRegPass}
+            setLoginEmail={setLoginEmail}
+            setLoginPass={setLoginPass}
+          />
+        }
+      ></Route>
+      <Route element={<ProtectedRoutes user={user} />}>
+        <Route
+          path="/messenger"
+          element={<Messenger logout={logout} user={user} />}
+        ></Route>
+      </Route>
+    </Routes>
   );
 }
