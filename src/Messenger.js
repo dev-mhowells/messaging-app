@@ -14,7 +14,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { db, auth } from "./firebase-config";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 export default function Messenger(props) {
   const messagesCollectionRef = collection(db, "messages");
@@ -26,7 +26,7 @@ export default function Messenger(props) {
   const [message, setMessage] = React.useState(""); // value of messaging input
   const [editMessage, setEditMessage] = React.useState({}); // message to edit object
   const [correction, setCorrection] = React.useState(""); // value of correction textarea input
-  const [selectedWord, setSelectedWord] = React.useState("");
+  const [selectedWord, setSelectedWord] = React.useState([]);
 
   React.useEffect(() => {
     onSnapshot(q, (snapshot) => {
@@ -65,8 +65,24 @@ export default function Messenger(props) {
   }
 
   function getSelectedWord(word) {
-    setSelectedWord(word);
+    setSelectedWord((prevSelectedWords) => [
+      ...prevSelectedWords,
+      { word, meaning: "", example: "", pronunciation: "" },
+    ]);
+    // setSelectedWord(word);
   }
+
+  const allSelectedWords = selectedWord.map((wordObj) => (
+    // <button className="bg-sky-400 hover:bg-sky-900 text-white py-1 px-2">
+    //   {wordObj.word}
+    // </button>
+    <Link
+      to={`correctWord/${wordObj.word}`}
+      className="bg-sky-400 hover:bg-sky-900 text-white py-1 px-2"
+    >
+      {wordObj.word}
+    </Link>
+  ));
 
   // adds correction text as property to corresponding message object in firebase
   // merge: true prevents update from overwriting entire doc
@@ -97,12 +113,13 @@ export default function Messenger(props) {
           </button>
         </section>
         <section className="w-2/5 flex items-end ml-10">
-          <button className="bg-sky-700 hover:bg-sky-900 text-white py-1 px-2">
+          {/* <button className="bg-sky-700 hover:bg-sky-900 text-white py-1 px-2">
             Message
-          </button>
-          <button className="bg-sky-400 hover:bg-sky-900 text-white py-1 px-2">
+          </button> */}
+          {/* <button className="bg-sky-400 hover:bg-sky-900 text-white py-1 px-2">
             {!selectedWord ? "Word" : selectedWord}
-          </button>
+          </button> */}
+          {allSelectedWords}
         </section>
       </div>
       <div className="h-full w-full flex gap-10 mb-10">
@@ -126,7 +143,8 @@ export default function Messenger(props) {
           </div>
         </section>
         <Routes>
-          <Route exact path="correctWord" element={<CorrectWord />} />
+          {/* <Route exact path="correctWord" element={<CorrectWord />} /> */}
+          <Route exact path="correctWord/:wordId" element={<CorrectWord />} />
         </Routes>
       </div>
     </div>
