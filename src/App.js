@@ -4,7 +4,12 @@ import Messenger from "./Messenger.js";
 import Login from "./Login.js";
 import CorrectWord from "./CorrectMessage.js";
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Outlet,
+} from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 // import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
@@ -52,7 +57,7 @@ export default function App() {
   React.useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      user && navigate("/messenger");
+      // user && navigate("messenger");
     });
   }, []);
 
@@ -78,7 +83,7 @@ export default function App() {
         loginPass
       );
       console.log(newUser);
-      // navigate("/messenger");
+      navigate("/messenger");
     } catch (error) {
       console.log(error.message);
     }
@@ -97,6 +102,7 @@ export default function App() {
     <Routes>
       <Route
         className="bg-white flex flex-col items-center justify-center h-screen"
+        exact
         path="/"
         element={
           <Login
@@ -113,11 +119,10 @@ export default function App() {
       ></Route>
       <Route element={<ProtectedRoutes user={user} />}>
         <Route
-          path="/messenger"
+          exact
+          path="/messenger/*"
           element={<Messenger logout={logout} user={user} />}
-        >
-          <Route path="/correctWord" element={<CorrectWord />}></Route>
-        </Route>
+        />
       </Route>
     </Routes>
   );

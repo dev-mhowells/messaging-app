@@ -14,6 +14,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { db, auth } from "./firebase-config";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 export default function Messenger(props) {
   const messagesCollectionRef = collection(db, "messages");
@@ -124,13 +125,9 @@ export default function Messenger(props) {
             </button>
           </div>
         </section>
-        {/* <CorrectMessage
-          editMessage={editMessage}
-          handleCorrectionChange={handleCorrectionChange}
-          addCorrection={addCorrection}
-          correction={correction}
-        /> */}
-        <CorrectWord />
+        <Routes>
+          <Route exact path="correctWord" element={<CorrectWord />} />
+        </Routes>
       </div>
     </div>
   );
