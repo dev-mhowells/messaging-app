@@ -2,6 +2,7 @@ import React from "react";
 import Text from "./Text.js";
 import Messenger from "./Messenger.js";
 import Login from "./Login.js";
+import CorrectWord from "./CorrectMessage.js";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -114,7 +115,9 @@ export default function App() {
         <Route
           path="/messenger"
           element={<Messenger logout={logout} user={user} />}
-        ></Route>
+        >
+          <Route path="/correctWord" element={<CorrectWord />}></Route>
+        </Route>
       </Route>
     </Routes>
   );
