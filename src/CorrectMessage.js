@@ -8,7 +8,7 @@ export default function CorrectMessage(props) {
         contentEditable="true"
         className="h-20 bg-sky-100 w-300 p-2 rounded-md"
       >
-        {props.editMessage.message}
+        {props.messageToEdit.message}
       </div>
       <p>Correction</p>
       <textarea

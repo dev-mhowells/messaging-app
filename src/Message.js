@@ -46,7 +46,7 @@ export default function Message(props) {
         }`}
         onClick={() => {
           toggler(isSelected);
-          props.getEditMessage(props.message);
+          props.getMessageToEdit(props.message);
         }}
       >
         {!props.message.selected ? (

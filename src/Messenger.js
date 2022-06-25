@@ -24,9 +24,9 @@ export default function Messenger(props) {
 
   const [messages, setMessages] = React.useState([]); // array of message objects from firebase
   const [message, setMessage] = React.useState(""); // value of messaging input
-  const [editMessage, setEditMessage] = React.useState({}); // message to edit object
+  const [messageToEdit, setMessageToEdit] = React.useState({}); // message to edit object
   const [correction, setCorrection] = React.useState(""); // value of correction textarea input
-  const [selectedWord, setSelectedWord] = React.useState([]);
+  const [selectedWord, setSelectedWord] = React.useState([]); // words selected by learner, array of objects
 
   React.useEffect(() => {
     onSnapshot(q, (snapshot) => {
@@ -55,9 +55,9 @@ export default function Messenger(props) {
     setMessage(e.target.value);
   }
 
-  // gets edited message object from input and sets editMessage state
-  function getEditMessage(messageObj) {
-    setEditMessage(messageObj);
+  // gets edited message object from input and sets messageToEdit state
+  function getMessageToEdit(messageObj) {
+    setMessageToEdit(messageObj);
   }
 
   function handleCorrectionChange(e) {
@@ -77,7 +77,7 @@ export default function Messenger(props) {
     //   {wordObj.word}
     // </button>
     <Link
-      to={`correctWord/${wordObj.word}`}
+      to={`console/correctWord/${wordObj.word}`}
       className="bg-sky-400 hover:bg-sky-900 text-white py-1 px-2"
     >
       {wordObj.word}
@@ -87,14 +87,14 @@ export default function Messenger(props) {
   // adds correction text as property to corresponding message object in firebase
   // merge: true prevents update from overwriting entire doc
   function addCorrection() {
-    const ref = doc(db, "messages", editMessage.id);
+    const ref = doc(db, "messages", messageToEdit.id);
     setDoc(ref, { correction }, { merge: true });
   }
 
   const allMessages = messages.map((message) => {
     return (
       <Message
-        getEditMessage={getEditMessage}
+        getMessageToEdit={getMessageToEdit}
         message={message}
         getSelectedWord={getSelectedWord}
       />
@@ -113,21 +113,20 @@ export default function Messenger(props) {
           </button>
         </section>
         <section className="w-2/5 flex items-end ml-10">
-          {/* <button className="bg-sky-700 hover:bg-sky-900 text-white py-1 px-2">
-            Message
-          </button> */}
-          {/* <button className="bg-sky-400 hover:bg-sky-900 text-white py-1 px-2">
-            {!selectedWord ? "Word" : selectedWord}
-          </button> */}
+          {messageToEdit && (
+            <Link
+              to={`console/correctMessage`}
+              className="bg-sky-400 hover:bg-sky-900 text-white py-1 px-2"
+            >
+              Message
+            </Link>
+          )}
           {allSelectedWords}
         </section>
       </div>
       <div className="h-full w-full flex gap-10 mb-10">
         <section className="ml-10 mb-10 w-1/2 h-full flex flex-col justify-end gap-5 border-t-2 border-sky-700">
-          <div className="flex flex-col gap-5 w-full mt-5">
-            {/* <Messages getEditMessage={getEditMessage} messages={messages} /> */}
-            {allMessages}
-          </div>
+          <div className="flex flex-col gap-5 w-full mt-5">{allMessages}</div>
           <div className="flex h-10 justify-between">
             <textarea
               className=" w-full border focus:outline-none border-sky-200 focus:border-sky-300 p-2"
@@ -143,8 +142,23 @@ export default function Messenger(props) {
           </div>
         </section>
         <Routes>
-          {/* <Route exact path="correctWord" element={<CorrectWord />} /> */}
-          <Route exact path="correctWord/:wordId" element={<CorrectWord />} />
+          <Route exact path="console">
+            <Route
+              exact
+              path="correctMessage"
+              element={
+                <CorrectMessage
+                  messageToEdit={messageToEdit}
+                  handleCorrectionChange={handleCorrectionChange}
+                  correction={correction}
+                  addCorrection={addCorrection}
+                ></CorrectMessage>
+              }
+            />
+            <Route exact path="correctWord" element={<CorrectWord />}>
+              <Route path=":wordId" element={<CorrectWord />} />
+            </Route>
+          </Route>
         </Routes>
       </div>
     </div>
