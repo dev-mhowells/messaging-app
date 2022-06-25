@@ -24,9 +24,14 @@ export default function Messenger(props) {
 
   const [messages, setMessages] = React.useState([]); // array of message objects from firebase
   const [message, setMessage] = React.useState(""); // value of messaging input
+
   const [messageToEdit, setMessageToEdit] = React.useState({}); // message to edit object
-  const [correction, setCorrection] = React.useState(""); // value of correction textarea input
-  const [selectedWord, setSelectedWord] = React.useState([]); // words selected by learner, array of objects
+  const [correction, setCorrection] = React.useState(""); // value of correction textarea input in correctMessage
+
+  const [selectedWord, setSelectedWord] = React.useState([]); // words selected by learner, array of objects, keys: word, messageId
+  const [wordExplained, setWordExplained] = React.useState({}); // current word being explained, created in correctWord
+
+  // ------------------------------------- MESSENGER ACTUAL ----------------------------------------
 
   React.useEffect(() => {
     onSnapshot(q, (snapshot) => {
@@ -50,10 +55,12 @@ export default function Messenger(props) {
     });
   }
 
-  // message to send
+  // message to send set to value of input
   function handleMessageChange(e) {
     setMessage(e.target.value);
   }
+
+  // --------------------------------- CORRECTING MESSAGE ----------------------------------
 
   // gets edited message object from input and sets messageToEdit state
   function getMessageToEdit(messageObj) {
@@ -64,18 +71,46 @@ export default function Messenger(props) {
     setCorrection(e.target.value);
   }
 
-  function getSelectedWord(word) {
+  // adds correction text as property to corresponding message object in firebase
+  // merge: true prevents update from overwriting entire doc
+  function addCorrection() {
+    const ref = doc(db, "messages", messageToEdit.id);
+    setDoc(ref, { correction }, { merge: true });
+  }
+
+  console.log("MESSAGETOEDIT", messageToEdit);
+
+  // --------------------------------- EXPLAINING WORD -------------------------------------
+
+  // THIS SECTION IS A MESS AND DOESNT WORK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  // ARRAY - USED FOR SETTING TABS FOR EACH WORD AND ID IS USED BY CORRECTMESSAGE
+  // TO FIND MESSAGE ASSOCIATED WITH WORD
+  function getSelectedWord(word, messageId) {
     setSelectedWord((prevSelectedWords) => [
       ...prevSelectedWords,
-      { word, meaning: "", example: "", pronunciation: "" },
+      { word, messageId },
     ]);
     // setSelectedWord(word);
   }
 
+  console.log("SELECTED WORD", selectedWord);
+
+  // SHOULD BE An OBJECT FOR A SINGLE WORD SO THAT THE OBJECT CAN BE ADDED TO MESSAGE IN FIREBASE
+  function handleExplainWord(wordExplained) {
+    setWordExplained(wordExplained);
+  }
+
+  function addExplainedWord() {
+    const ref = doc(db, "messages", wordExplained.messageId);
+    setDoc(ref, { wordExplained }, { merge: true });
+  }
+
+  console.log("EXPLAINED WORDS", wordExplained);
+
+  // -------------------------------------------------------------------------------------
+
   const allSelectedWords = selectedWord.map((wordObj) => (
-    // <button className="bg-sky-400 hover:bg-sky-900 text-white py-1 px-2">
-    //   {wordObj.word}
-    // </button>
     <Link
       to={`console/correctWord/${wordObj.word}`}
       className="bg-sky-400 hover:bg-sky-900 text-white py-1 px-2"
@@ -83,13 +118,6 @@ export default function Messenger(props) {
       {wordObj.word}
     </Link>
   ));
-
-  // adds correction text as property to corresponding message object in firebase
-  // merge: true prevents update from overwriting entire doc
-  function addCorrection() {
-    const ref = doc(db, "messages", messageToEdit.id);
-    setDoc(ref, { correction }, { merge: true });
-  }
 
   const allMessages = messages.map((message) => {
     return (
@@ -155,8 +183,23 @@ export default function Messenger(props) {
                 ></CorrectMessage>
               }
             />
-            <Route exact path="correctWord" element={<CorrectWord />}>
-              <Route path=":wordId" element={<CorrectWord />} />
+            <Route
+              exact
+              path="correctWord"
+              element={
+                <CorrectWord
+                  //   thisWord={
+                  //     selectedWord[0]
+                  //       ? selectedWord[selectedWord.length - 1].word
+                  //       : "none"
+                  //   }
+                  addExplainedWord={addExplainedWord}
+                  selectedWord={selectedWord}
+                  handleExplainWord={handleExplainWord}
+                />
+              }
+            >
+              <Route path=":word" element={<CorrectWord />} />
             </Route>
           </Route>
         </Routes>

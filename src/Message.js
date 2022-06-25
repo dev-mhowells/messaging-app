@@ -14,7 +14,6 @@ export default function Message(props) {
 
   function splitMessage(message) {
     splitMessage = message.split(" ");
-    console.log("split!!!", splitMessage);
     return splitMessage;
   }
 
@@ -25,7 +24,7 @@ export default function Message(props) {
   const eachWord = splitIntoWords.map((word) => (
     <button
       className="bg-sky-50 py-2 px-4 ml-2"
-      onClick={() => props.getSelectedWord(word)}
+      onClick={() => props.getSelectedWord(word, props.message.id)}
     >
       {word}
     </button>
