@@ -104,8 +104,8 @@ export default function Messenger(props) {
       <Link
         to={`console/correctWord/${wordObj.word}`}
         className={`${
-          wordObj.word === selectedTab ? "bg-sky-600" : "bg-sky-400"
-        } hover:bg-sky-900 text-white py-1 px-2`}
+          wordObj.word === selectedTab ? "bg-sky-700" : "bg-sky-400"
+        } hover:bg-sky-900 text-white py-1 px-2 rounded-t-md`}
         onClick={getSelectedTab}
       >
         {wordObj.word}
@@ -117,8 +117,8 @@ export default function Messenger(props) {
     <Link
       to={`console/correctMessage`}
       className={`${
-        selectedTab === "Message" ? "bg-sky-600" : "bg-sky-400"
-      } hover:bg-sky-900 text-white py-1 px-2`}
+        selectedTab === "Message" ? "bg-sky-700" : "bg-sky-400"
+      } hover:bg-sky-900 text-white py-1 px-2 rounded-t-md`}
       onClick={getSelectedTab}
     >
       Message
@@ -140,38 +140,34 @@ export default function Messenger(props) {
   return (
     <div className="h-screen w-full flex flex-col font-poppins">
       <div className="flex gap-10">
-        <section className="flex justify-between w-1/2 mt-5 ml-10">
-          <div className="rounded-full w-12 h-12 bg-sky-900"></div>
-          <h2>Brian Horseman</h2>
-          <h2 className="py-2 px-4 bg-sky-100">30:00</h2>
+        <section className="flex justify-between w-1/2 mt-4 ml-10">
+          <div className="flex gap-4">
+            <div className="rounded-full w-12 h-12 bg-sky-900"></div>
+            <h2>Teacher</h2>
+          </div>
+          <div className="flex gap-4">
+            <h2>Student</h2>
+            <div className="rounded-full w-12 h-12 bg-sky-900"></div>
+          </div>
           <button className="py-2 px-4 bg-sky-100" onClick={props.logout}>
             Log out
           </button>
         </section>
-        <section className="w-2/5 flex items-end ml-10">
-          {/* {messageToEdit && (
-            <Link
-              to={`console/correctMessage`}
-              className="bg-sky-400 hover:bg-sky-900 text-white py-1 px-2"
-            >
-              Message
-            </Link>
-          )} */}
-          {/* {allSelectedWords} */}
-          {allTabs}
-        </section>
+        <section className="w-2/5 flex items-end">{allTabs}</section>
       </div>
       <div className="h-full w-full flex gap-10 mb-10">
         <section className="ml-10 mb-10 w-1/2 h-full flex flex-col justify-end gap-5 border-t-2 border-sky-700">
           <div className="flex flex-col gap-5 w-full mt-5">{allMessages}</div>
-          <div className="flex h-10 justify-between">
-            <textarea
-              className=" w-full border focus:outline-none border-sky-200 focus:border-sky-300 p-2"
-              value={message}
-              onChange={handleMessageChange}
-            ></textarea>
+          {/* <div className="flex h-10 justify-between"> */}
+          <textarea
+            className="h-10 w-full focus:outline-none border-sky-700 focus:border-sky-300 p-2 border-2 rounded-md overflow-hidden resize-none"
+            value={message}
+            onChange={handleMessageChange}
+          ></textarea>
+          <div className="flex w-full justify-between">
+            <h2 className="py-2 px-4 bg-sky-100 h-10">30:00</h2>
             <button
-              className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4"
+              className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4 h-10 w-1/3 self-end rounded-md mb-4"
               onClick={() => createMessage()}
             >
               send

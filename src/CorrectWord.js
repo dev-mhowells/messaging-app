@@ -25,8 +25,8 @@ export default function (props) {
   }
 
   return (
-    <section className="ml-10 w-2/5 flex flex-col gap-4 border-t-2 border-sky-700 text-xs">
-      <p>Type</p>
+    <section className=" w-2/5 h-full flex flex-col gap-4 border-t-2 border-sky-700 text-xs">
+      <p className="mt-4">Type</p>
       <div className="h-20 w-300 p-3 rounded-md border-2 border-sky-700">
         <button className="bg-sky-400 border rounded-md p-1 text-white mr-2">
           noun
@@ -43,21 +43,15 @@ export default function (props) {
       </div>
       <p>Definition</p>
       <textarea
-        className="h-20 w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none"
+        className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none"
         onChange={handleDefinition}
       ></textarea>
       <p>Examples</p>
-      <div
-        contentEditable="true"
-        className="h-20 w-300 p-2 border-2 border-sky-700 rounded-md"
-      ></div>
+      <textarea className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none"></textarea>
       <p>Pronunciation</p>
-      <div
-        contentEditable="true"
-        className="h-20 w-300 p-2 border-2 border-sky-700 rounded-md"
-      ></div>
+      <textarea className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none"></textarea>
       <button
-        className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4"
+        className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4 border-none rounded-md w-1/3 self-end mb-4"
         onClick={() => {
           addExplainedWord();
         }}
