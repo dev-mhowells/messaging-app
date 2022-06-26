@@ -85,7 +85,7 @@ export default function Messenger(props) {
   // THIS SECTION IS A MESS AND DOESNT WORK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   // ARRAY - USED FOR SETTING TABS FOR EACH WORD AND ID IS USED BY CORRECTMESSAGE
-  // TO FIND MESSAGE ASSOCIATED WITH WORD
+  // TO FIND MESSAGE ASSOCIATED WITH WORD... CALLED IN MESSAGE.JS
   function getSelectedWord(word, messageId) {
     setSelectedWord((prevSelectedWords) => [
       ...prevSelectedWords,
@@ -94,6 +94,7 @@ export default function Messenger(props) {
     // setSelectedWord(word);
   }
 
+  //---------------
   console.log("SELECTED WORD", selectedWord);
 
   // SHOULD BE An OBJECT FOR A SINGLE WORD SO THAT THE OBJECT CAN BE ADDED TO MESSAGE IN FIREBASE
@@ -183,16 +184,24 @@ export default function Messenger(props) {
                 ></CorrectMessage>
               }
             />
-            <Route
+            {selectedWord.map((word) => (
+              <Route
+                exact
+                path={`correctWord/${word.word}`}
+                element={
+                  <CorrectWord
+                    specificWord={word.word}
+                    messageId={word.messageId}
+                  />
+                }
+              ></Route>
+            ))}
+
+            {/* <Route
               exact
               path="correctWord"
               element={
                 <CorrectWord
-                  //   thisWord={
-                  //     selectedWord[0]
-                  //       ? selectedWord[selectedWord.length - 1].word
-                  //       : "none"
-                  //   }
                   addExplainedWord={addExplainedWord}
                   selectedWord={selectedWord}
                   handleExplainWord={handleExplainWord}
@@ -200,7 +209,7 @@ export default function Messenger(props) {
               }
             >
               <Route path=":word" element={<CorrectWord />} />
-            </Route>
+            </Route> */}
           </Route>
         </Routes>
       </div>

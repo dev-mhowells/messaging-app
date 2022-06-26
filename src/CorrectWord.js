@@ -22,15 +22,15 @@ export default function (props) {
     return messageId;
   }
 
-  console.log("THIS ONE", findMessageId());
+  //   console.log("THIS ONE", findMessageId());
 
   // object created using inputs from this component and passed to explainedWords arr
   // in state, in Messenger.js
-  const wordExplained = {
-    messageId: findMessageId(),
-    word,
-    definition,
-  };
+  //   const wordExplained = {
+  //     messageId: findMessageId(),
+  //     word,
+  //     definition,
+  //   };
 
   // for onchange for definition feild, captures input and sets to definition state
   function handleDefinition(e) {
@@ -54,8 +54,8 @@ export default function (props) {
           adverb
         </button>
       </div>
-      <p>Definition</p>
-      {/* <p>{props.thisWord}</p> */}
+      {/* <p>Definition</p> */}
+      <p>{props.specificWord}</p>
       {/* <p>{word}</p> */}
       <textarea
         className="h-20 w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none"
@@ -63,7 +63,8 @@ export default function (props) {
       >
         {/* {props.correction} */}
       </textarea>
-      <p>Examples</p>
+      {/* <p>Examples</p> */}
+      <p>{props.messageId}</p>
       <div
         contentEditable="true"
         className="h-20 w-300 p-2 border-2 border-sky-700 rounded-md"
@@ -75,10 +76,10 @@ export default function (props) {
       ></div>
       <button
         className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4"
-        onClick={() => {
-          props.handleExplainWord(wordExplained);
-            props.addExplainedWord();
-        }}
+        // onClick={() => {
+        //   props.handleExplainWord(wordExplained);
+        //     props.addExplainedWord();
+        // }}
       >
         send
       </button>
