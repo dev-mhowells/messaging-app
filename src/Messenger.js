@@ -19,7 +19,6 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 export default function Messenger(props) {
   const messagesCollectionRef = collection(db, "messages");
 
-  // doesn't work yet
   const q = query(messagesCollectionRef, orderBy("createdAt", "asc"));
 
   const [messages, setMessages] = React.useState([]); // array of message objects from firebase
@@ -78,11 +77,7 @@ export default function Messenger(props) {
     setDoc(ref, { correction }, { merge: true });
   }
 
-  console.log("MESSAGETOEDIT", messageToEdit);
-
   // --------------------------------- EXPLAINING WORD -------------------------------------
-
-  // THIS SECTION IS A MESS AND DOESNT WORK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   // ARRAY - USED FOR SETTING TABS FOR EACH WORD AND ID IS USED BY CORRECTMESSAGE
   // TO FIND MESSAGE ASSOCIATED WITH WORD... CALLED IN MESSAGE.JS
@@ -96,14 +91,41 @@ export default function Messenger(props) {
 
   // -------------------------------------------------------------------------------------
 
-  const allSelectedWords = selectedWords.map((wordObj) => (
+  const [selectedTab, setSelectedTab] = React.useState("");
+
+  function getSelectedTab(e) {
+    setSelectedTab(e.target.text);
+    console.log("TARGET", e.target.text);
+  }
+
+  const allSelectedWords = selectedWords.map((wordObj) => {
+    console.log("CURRENT WORD", wordObj.word);
+    return (
+      <Link
+        to={`console/correctWord/${wordObj.word}`}
+        className={`${
+          wordObj.word === selectedTab ? "bg-sky-600" : "bg-sky-400"
+        } hover:bg-sky-900 text-white py-1 px-2`}
+        onClick={getSelectedTab}
+      >
+        {wordObj.word}
+      </Link>
+    );
+  });
+
+  const messageTab = messageToEdit && (
     <Link
-      to={`console/correctWord/${wordObj.word}`}
-      className="bg-sky-400 hover:bg-sky-900 text-white py-1 px-2"
+      to={`console/correctMessage`}
+      className={`${
+        selectedTab === "Message" ? "bg-sky-600" : "bg-sky-400"
+      } hover:bg-sky-900 text-white py-1 px-2`}
+      onClick={getSelectedTab}
     >
-      {wordObj.word}
+      Message
     </Link>
-  ));
+  );
+
+  const allTabs = [messageTab, ...allSelectedWords];
 
   const allMessages = messages.map((message) => {
     return (
@@ -127,15 +149,16 @@ export default function Messenger(props) {
           </button>
         </section>
         <section className="w-2/5 flex items-end ml-10">
-          {messageToEdit && (
+          {/* {messageToEdit && (
             <Link
               to={`console/correctMessage`}
               className="bg-sky-400 hover:bg-sky-900 text-white py-1 px-2"
             >
               Message
             </Link>
-          )}
-          {allSelectedWords}
+          )} */}
+          {/* {allSelectedWords} */}
+          {allTabs}
         </section>
       </div>
       <div className="h-full w-full flex gap-10 mb-10">

@@ -5,11 +5,6 @@ import { db } from "./firebase-config";
 export default function (props) {
   const [definition, setDefinition] = React.useState("");
 
-  //   function addExplainedWord() {
-  //     const ref = doc(db, "messages", props.selectedWord.messageId);
-  //     setDoc(ref, { wordExplained }, { merge: true });
-  //   }
-
   async function addExplainedWord() {
     const ref = doc(db, "messages", props.selectedWord.messageId);
     await updateDoc(ref, {
