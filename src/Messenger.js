@@ -29,7 +29,6 @@ export default function Messenger(props) {
   const [correction, setCorrection] = React.useState(""); // value of correction textarea input in correctMessage
 
   const [selectedWords, setSelectedWords] = React.useState([]); // words selected by learner, array of objects, keys: word, messageId
-  const [wordExplained, setWordExplained] = React.useState({}); // current word being explained, created in correctWord
 
   // ------------------------------------- MESSENGER ACTUAL ----------------------------------------
 
@@ -52,6 +51,7 @@ export default function Messenger(props) {
       createdAt: serverTimestamp(),
       message: message,
       uid: props.user.uid,
+      words: [],
     });
   }
 
@@ -93,21 +93,6 @@ export default function Messenger(props) {
     ]);
     // setSelectedWord(word);
   }
-
-  //---------------
-  console.log("SELECTED WORD", selectedWords);
-
-  // SHOULD BE An OBJECT FOR A SINGLE WORD SO THAT THE OBJECT CAN BE ADDED TO MESSAGE IN FIREBASE
-  function handleExplainWord(wordExplained) {
-    setWordExplained(wordExplained);
-  }
-
-  //   function addExplainedWord() {
-  //     const ref = doc(db, "messages", wordExplained.messageId);
-  //     setDoc(ref, { wordExplained }, { merge: true });
-  //   }
-
-  console.log("EXPLAINED WORDS", wordExplained);
 
   // -------------------------------------------------------------------------------------
 
@@ -188,13 +173,7 @@ export default function Messenger(props) {
               <Route
                 exact
                 path={`correctWord/${word.word}`}
-                element={
-                  <CorrectWord
-                    // specificWord={word.word}
-                    // messageId={word.messageId}
-                    selectedWord={word}
-                  />
-                }
+                element={<CorrectWord selectedWord={word} />}
               ></Route>
             ))}
           </Route>

@@ -1,13 +1,20 @@
 import React from "react";
-import { doc, setDoc } from "firebase/firestore";
+import { arrayUnion, doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase-config";
 
 export default function (props) {
   const [definition, setDefinition] = React.useState("");
 
-  function addExplainedWord() {
+  //   function addExplainedWord() {
+  //     const ref = doc(db, "messages", props.selectedWord.messageId);
+  //     setDoc(ref, { wordExplained }, { merge: true });
+  //   }
+
+  async function addExplainedWord() {
     const ref = doc(db, "messages", props.selectedWord.messageId);
-    setDoc(ref, { wordExplained }, { merge: true });
+    await updateDoc(ref, {
+      words: arrayUnion(wordExplained),
+    });
   }
 
   //   object sent to firebase.. might not need messageId

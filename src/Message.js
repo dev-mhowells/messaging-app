@@ -1,5 +1,5 @@
 import React from "react";
-import { db, auth } from "./firebase-config";
+import { auth } from "./firebase-config";
 
 export default function Message(props) {
   const [isSelected, setIsSelected] = React.useState(false);
@@ -8,16 +8,15 @@ export default function Message(props) {
     setIsSelected((prevIsSelected) => !prevIsSelected);
   }
 
+  // not sure if I should be directly changing the properties of the message obj
+  // like this as it is in state.... working for now
+  // also.. why use this and not just isSeleceted state directly? come back later
   props.message.selected = isSelected;
-
-  const splitWords = props.message.message;
 
   function splitMessage(message) {
     splitMessage = message.split(" ");
     return splitMessage;
   }
-
-  //   const words = "here are some words to see what happens";
 
   const splitIntoWords = splitMessage(props.message.message);
 
@@ -56,6 +55,10 @@ export default function Message(props) {
       {props.message.correction && (
         <p className="p-2">{props.message.correction}</p>
       )}
+      {props.message.words &&
+        props.message.words.map((wordObj) => (
+          <p className="p-2 bg-sky-900">{`${wordObj.word}: ${wordObj.definition}`}</p>
+        ))}
     </div>
   );
 }
