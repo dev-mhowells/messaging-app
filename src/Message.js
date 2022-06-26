@@ -22,7 +22,7 @@ export default function Message(props) {
 
   const eachWord = splitIntoWords.map((word) => (
     <button
-      className="bg-sky-50 py-1 px-2 ml-2 rounded-md text-sm m-1 hover:bg-sky-300"
+      className="bg-sky-50 py-1 px-2 ml-2 rounded-md text-sm mr-2 mt-2 mb-2 hover:bg-sky-300"
       onClick={() => props.getSelectedWords(word, props.message.id)}
     >
       {word}
@@ -57,7 +57,7 @@ export default function Message(props) {
       )}
       {props.message.words &&
         props.message.words.map((wordObj) => (
-          <p className="p-2 bg-sky-900">{`${wordObj.word}: ${wordObj.definition}`}</p>
+          <p className="p-2">{`${wordObj.word}: ${wordObj.definition}`}</p>
         ))}
     </div>
   );

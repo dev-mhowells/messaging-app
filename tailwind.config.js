@@ -8,9 +8,6 @@ module.exports = {
         raleway: ["Raleway", "sans-serif"],
       },
     },
-    // maxWidth: {
-    //   '3/5': '60%'
-    // }
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar")],
 };

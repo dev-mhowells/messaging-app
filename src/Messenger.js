@@ -139,7 +139,7 @@ export default function Messenger(props) {
 
   return (
     <div className="h-screen w-full flex flex-col font-poppins">
-      <div className="flex gap-10">
+      <div className="flex gap-10 h-[10%]">
         <section className="flex justify-between w-1/2 mt-4 ml-10">
           <div className="flex gap-4">
             <div className="rounded-full w-12 h-12 bg-sky-900 mb-4"></div>
@@ -155,9 +155,9 @@ export default function Messenger(props) {
         </section>
         <section className="w-2/5 flex items-end">{allTabs}</section>
       </div>
-      <div className="h-full w-full flex gap-10 mb-10">
-        <section className="ml-10 mb-10 w-1/2 h-full flex flex-col justify-end gap-5 border-t-2 border-sky-700">
-          <div className="flex flex-col gap-5 w-full overflow-y-auto">
+      <div className="h-[90%] w-full flex gap-10">
+        <section className=" h-full ml-10 w-1/2 flex flex-col justify-end gap-5 border-t-2 border-sky-700">
+          <div className="p-3 flex flex-col gap-5 w-full overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-sky-700">
             {allMessages}
           </div>
           <textarea
