@@ -25,7 +25,7 @@ export default function (props) {
   }
 
   return (
-    <section className=" w-2/5 h-full flex flex-col gap-4 border-t-2 border-sky-700 text-xs">
+    <section className=" w-2/5 flex flex-col gap-4 border-t-2 border-sky-700 text-xs">
       <p className="mt-4">Type</p>
       <div className="h-20 w-300 p-3 rounded-md border-2 border-sky-700">
         <button className="bg-sky-400 border rounded-md p-1 text-white mr-2">
