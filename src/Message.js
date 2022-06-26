@@ -24,7 +24,7 @@ export default function Message(props) {
   const eachWord = splitIntoWords.map((word) => (
     <button
       className="bg-sky-50 py-2 px-4 ml-2"
-      onClick={() => props.getSelectedWord(word, props.message.id)}
+      onClick={() => props.getSelectedWords(word, props.message.id)}
     >
       {word}
     </button>
@@ -32,9 +32,8 @@ export default function Message(props) {
 
   return (
     <div
-      className={`flex flex-col bg-sky-100 w-3/5 rounded-md hover:cursor-pointer ${ props.message.uid !== auth.currentUser.uid
-          ? "self-end"
-          : "self-start"
+      className={`flex flex-col bg-sky-100 w-3/5 rounded-md hover:cursor-pointer ${
+        props.message.uid !== auth.currentUser.uid ? "self-end" : "self-start"
       }`}
     >
       <div

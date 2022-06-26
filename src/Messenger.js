@@ -28,7 +28,7 @@ export default function Messenger(props) {
   const [messageToEdit, setMessageToEdit] = React.useState({}); // message to edit object
   const [correction, setCorrection] = React.useState(""); // value of correction textarea input in correctMessage
 
-  const [selectedWord, setSelectedWord] = React.useState([]); // words selected by learner, array of objects, keys: word, messageId
+  const [selectedWords, setSelectedWords] = React.useState([]); // words selected by learner, array of objects, keys: word, messageId
   const [wordExplained, setWordExplained] = React.useState({}); // current word being explained, created in correctWord
 
   // ------------------------------------- MESSENGER ACTUAL ----------------------------------------
@@ -86,8 +86,8 @@ export default function Messenger(props) {
 
   // ARRAY - USED FOR SETTING TABS FOR EACH WORD AND ID IS USED BY CORRECTMESSAGE
   // TO FIND MESSAGE ASSOCIATED WITH WORD... CALLED IN MESSAGE.JS
-  function getSelectedWord(word, messageId) {
-    setSelectedWord((prevSelectedWords) => [
+  function getSelectedWords(word, messageId) {
+    setSelectedWords((prevSelectedWords) => [
       ...prevSelectedWords,
       { word, messageId },
     ]);
@@ -95,23 +95,23 @@ export default function Messenger(props) {
   }
 
   //---------------
-  console.log("SELECTED WORD", selectedWord);
+  console.log("SELECTED WORD", selectedWords);
 
   // SHOULD BE An OBJECT FOR A SINGLE WORD SO THAT THE OBJECT CAN BE ADDED TO MESSAGE IN FIREBASE
   function handleExplainWord(wordExplained) {
     setWordExplained(wordExplained);
   }
 
-  function addExplainedWord() {
-    const ref = doc(db, "messages", wordExplained.messageId);
-    setDoc(ref, { wordExplained }, { merge: true });
-  }
+  //   function addExplainedWord() {
+  //     const ref = doc(db, "messages", wordExplained.messageId);
+  //     setDoc(ref, { wordExplained }, { merge: true });
+  //   }
 
   console.log("EXPLAINED WORDS", wordExplained);
 
   // -------------------------------------------------------------------------------------
 
-  const allSelectedWords = selectedWord.map((wordObj) => (
+  const allSelectedWords = selectedWords.map((wordObj) => (
     <Link
       to={`console/correctWord/${wordObj.word}`}
       className="bg-sky-400 hover:bg-sky-900 text-white py-1 px-2"
@@ -125,7 +125,7 @@ export default function Messenger(props) {
       <Message
         getMessageToEdit={getMessageToEdit}
         message={message}
-        getSelectedWord={getSelectedWord}
+        getSelectedWords={getSelectedWords}
       />
     );
   });
@@ -184,32 +184,19 @@ export default function Messenger(props) {
                 ></CorrectMessage>
               }
             />
-            {selectedWord.map((word) => (
+            {selectedWords.map((word) => (
               <Route
                 exact
                 path={`correctWord/${word.word}`}
                 element={
                   <CorrectWord
-                    specificWord={word.word}
-                    messageId={word.messageId}
+                    // specificWord={word.word}
+                    // messageId={word.messageId}
+                    selectedWord={word}
                   />
                 }
               ></Route>
             ))}
-
-            {/* <Route
-              exact
-              path="correctWord"
-              element={
-                <CorrectWord
-                  addExplainedWord={addExplainedWord}
-                  selectedWord={selectedWord}
-                  handleExplainWord={handleExplainWord}
-                />
-              }
-            >
-              <Route path=":word" element={<CorrectWord />} />
-            </Route> */}
           </Route>
         </Routes>
       </div>
