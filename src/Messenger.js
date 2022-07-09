@@ -14,6 +14,8 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { db, auth } from "./firebase-config";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 export default function Messenger(props) {
@@ -28,6 +30,30 @@ export default function Messenger(props) {
   const [correction, setCorrection] = React.useState(""); // value of correction textarea input in correctMessage
 
   const [selectedWords, setSelectedWords] = React.useState([]); // words selected by learner, array of objects, keys: word, messageId
+
+  // ---------------------------------------- AUDIO -----------------------------------------------
+
+  // Create a reference with an initial file path and name
+  const storage = getStorage();
+  const audioRef = ref(storage, "audio");
+
+  getDownloadURL(audioRef)
+    .then((url) => {
+      // `url` is the download URL for 'images/stars.jpg'
+      console.log(url);
+
+      // // This can be downloaded directly:
+      // const xhr = new XMLHttpRequest();
+      // xhr.responseType = "blob";
+      // xhr.onload = (event) => {
+      //   const blob = xhr.response;
+      // };
+      // xhr.open("GET", url);
+      // xhr.send();
+    })
+    .catch((error) => {
+      // Handle any errors
+    });
 
   // ------------------------------------- MESSENGER ACTUAL ----------------------------------------
 
