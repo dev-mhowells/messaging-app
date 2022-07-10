@@ -59,23 +59,14 @@ export default function Messenger(props) {
 
   // ---------------------------------------- AUDIO -----------------------------------------------
 
+  // THIS ISN'T NEEDED HERE?????
   // Create a reference with an initial file path and name
   const storage = getStorage();
   const audioRef = ref(storage, "audio");
 
   getDownloadURL(audioRef)
     .then((url) => {
-      // `url` is the download URL for 'images/stars.jpg'
       console.log(url);
-
-      // // This can be downloaded directly:
-      // const xhr = new XMLHttpRequest();
-      // xhr.responseType = "blob";
-      // xhr.onload = (event) => {
-      //   const blob = xhr.response;
-      // };
-      // xhr.open("GET", url);
-      // xhr.send();
     })
     .catch((error) => {
       // Handle any errors
@@ -245,7 +236,11 @@ export default function Messenger(props) {
               <Route
                 exact
                 path={`correctWord/${word.word}`}
-                element={<CorrectWord selectedWord={word} />}
+                element={
+                  <CorrectWord
+                    selectedWord={word}
+                  />
+                }
               ></Route>
             ))}
           </Route>

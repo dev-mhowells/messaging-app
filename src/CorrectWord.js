@@ -8,6 +8,7 @@ import { useReactMediaRecorder } from "react-media-recorder";
 
 export default function (props) {
   const [definition, setDefinition] = React.useState("");
+  const [isAudio, setIsAudio] = React.useState(false); // changes to true onStop of audio recorder
 
   async function addExplainedWord() {
     const ref = doc(db, "messages", props.selectedWord.messageId);
@@ -16,22 +17,12 @@ export default function (props) {
     });
   }
 
-  //   object sent to firebase.. might not need messageId
-  const wordExplained = {
-    messageId: props.selectedWord.messageId,
-    word: props.selectedWord.word,
-    definition,
-  };
-
   // for onchange for definition feild, captures input and sets to definition state
   function handleDefinition(e) {
     setDefinition(e.target.value);
   }
 
   // MEDIA REACT ----------------------------------------------------------------------------------
-
-  // const [blobber, setBlobber] = React.useState();
-  const [audioBlob, setAudioBlob] = React.useState();
 
   // uploads blob to firebase
   function uploadAudio(blob) {
@@ -43,16 +34,27 @@ export default function (props) {
     });
   }
 
-  const { status, startRecording, stopRecording, mediaBlobUrl, onStop } =
-    useReactMediaRecorder({
-      audio: true,
-      type: "audio/wav",
-      onStop: (blobUrl, blob) => {
-        console.log("onstop happened");
-        // setBlobber(URL.createObjectURL(blob));
-        uploadAudio(blob);
-      },
-    });
+  const {
+    status,
+    startRecording,
+    stopRecording,
+    mediaBlobUrl,
+    onStop,
+    clearBlobUrl,
+  } = useReactMediaRecorder({
+    audio: true,
+    type: "audio/wav",
+    onStart: () => {
+      // reset control display with no audio - only useful if using AudioBlob state in console display!
+      // props.setAudioBlob("");
+    },
+    onStop: (blobUrl, blob) => {
+      console.log("onstop happened");
+      // getBlob();
+      setIsAudio(true);
+      uploadAudio(blob);
+    },
+  });
 
   // FIREBASE ---------------------------------------------------------------------------------------
 
@@ -63,30 +65,27 @@ export default function (props) {
   const storageRef = ref(storage);
 
   // Create a child reference as messageId
-  const audioRef = ref(storage, `${props.selectedWord.messageId}`);
+  const audioRef = ref(
+    storage,
+    `${props.selectedWord.messageId}/${props.selectedWord.word}`
+  );
 
-  // download - sets blobberUrl to blob dowloaded from firebase
-  getDownloadURL(audioRef)
-    .then((url) => {
-      setAudioBlob(url);
-    })
-    .catch((error) => {
-      switch (error.code) {
-        case "storage/object-not-found":
-          // File doesn't exist
-          break;
-        case "storage/unauthorized":
-          // User doesn't have permission to access the object
-          break;
-        case "storage/canceled":
-          // User canceled the upload
-          break;
-        case "storage/unknown":
-          // Unknown error occurred, inspect the server response
-          break;
-      }
-    });
+  function clearMediaBlob() {
+    mediaBlobUrl = null;
+  }
 
+  //   object sent to firebase.. might not need messageId
+  // IS AUDIO AND BLOB URL ARE JUST ATTEMPTS TO COMMUNICATE TO MESSAGE.JS THAT THERE IS A MESSAGE --
+  // MAYBE BEST JUST TO CHECK MESSAGE WITH STORAGE ANYWAY
+  const wordExplained = {
+    messageId: props.selectedWord.messageId,
+    word: props.selectedWord.word,
+    definition,
+    isAudio,
+    blobUrl: mediaBlobUrl ? mediaBlobUrl : null,
+  };
+
+  // mediaBlobUrl set as source because if use state as source, there is a delay
   function record() {
     return (
       <div>
@@ -105,7 +104,7 @@ export default function (props) {
         >
           Stop Recording
         </button>
-        <audio src={audioBlob} controls autoPlay loop />
+        <audio src={mediaBlobUrl} controls autoPlay loop />
       </div>
     );
   }
@@ -137,12 +136,12 @@ export default function (props) {
       <p>Pronunciation</p>
       <div className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none">
         {record()}
-        {/* <audio src={audioBlob} controls autoPlay loop /> */}
       </div>
       <button
         className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4 border-none rounded-md w-1/3 self-end mb-4"
         onClick={() => {
           addExplainedWord();
+          clearMediaBlob();
         }}
       >
         send
