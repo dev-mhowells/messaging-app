@@ -30,15 +30,27 @@ export default function (props) {
 
   // MEDIA REACT ----------------------------------------------------------------------------------
 
-  const [blobber, setBlobber] = React.useState();
+  // const [blobber, setBlobber] = React.useState();
+  const [audioBlob, setAudioBlob] = React.useState();
 
-  const { status, startRecording, stopRecording, mediaBlobUrl, onStop, blob } =
+  // uploads blob to firebase
+  function uploadAudio(blob) {
+    const metadata = {
+      //   contentType: "audio/wav",
+    };
+    uploadBytes(audioRef, blob, metadata).then((snapshot) => {
+      console.log("Uploaded a blob or file!");
+    });
+  }
+
+  const { status, startRecording, stopRecording, mediaBlobUrl, onStop } =
     useReactMediaRecorder({
       audio: true,
+      type: "audio/wav",
       onStop: (blobUrl, blob) => {
         console.log("onstop happened");
-        console.log(blob);
-        setBlobber(blob);
+        // setBlobber(URL.createObjectURL(blob));
+        uploadAudio(blob);
       },
     });
 
@@ -50,26 +62,30 @@ export default function (props) {
   // Create a storage reference from our storage service
   const storageRef = ref(storage);
 
-  // Create a child reference
-  const audioRef = ref(storage, "audio.wav");
-  // now points to audio
+  // Create a child reference as messageId
+  const audioRef = ref(storage, `${props.selectedWord.messageId}`);
 
-  function uploadAudio() {
-    const metadata = {
-      contentType: "audio/wav",
-    };
-    // 'file' comes from the Blob or File API
-    uploadBytes(audioRef, blobber, metadata).then((snapshot) => {
-      console.log("Uploaded a blob or file!");
-    });
-  }
-
-  // download
+  // download - sets blobberUrl to blob dowloaded from firebase
   getDownloadURL(audioRef)
     .then((url) => {
-      console.log(url);
+      setAudioBlob(url);
     })
-    .catch((error) => {});
+    .catch((error) => {
+      switch (error.code) {
+        case "storage/object-not-found":
+          // File doesn't exist
+          break;
+        case "storage/unauthorized":
+          // User doesn't have permission to access the object
+          break;
+        case "storage/canceled":
+          // User canceled the upload
+          break;
+        case "storage/unknown":
+          // Unknown error occurred, inspect the server response
+          break;
+      }
+    });
 
   function record() {
     return (
@@ -85,12 +101,11 @@ export default function (props) {
           className="bg-sky-400 border rounded-md p-1 text-white mr-2"
           onClick={() => {
             stopRecording();
-            uploadAudio();
           }}
         >
           Stop Recording
         </button>
-        <audio src={mediaBlobUrl} controls autoPlay loop />
+        <audio src={audioBlob} controls autoPlay loop />
       </div>
     );
   }
@@ -122,9 +137,7 @@ export default function (props) {
       <p>Pronunciation</p>
       <div className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none">
         {record()}
-        <audio controls>
-          <source src="https://firebasestorage.googleapis.com/v0/b/messenger-32231.appspot.com/o/audio.wav?alt=media&token=8df8bea5-bb1a-43d9-9a22-f9f437f80eeb"></source>
-        </audio>
+        {/* <audio src={audioBlob} controls autoPlay loop /> */}
       </div>
       <button
         className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4 border-none rounded-md w-1/3 self-end mb-4"

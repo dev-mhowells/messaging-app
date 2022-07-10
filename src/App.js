@@ -121,9 +121,7 @@ export default function App() {
         <Route
           exact
           path="/messenger/*"
-          element={
-            <Messenger logout={logout} user={user} />
-          }
+          element={<Messenger logout={logout} user={user} />}
         />
       </Route>
     </Routes>

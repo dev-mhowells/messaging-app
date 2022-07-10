@@ -17,6 +17,7 @@ import { db, auth } from "./firebase-config";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+// import { Translate } from "@google-cloud/translate/build/src/v2";
 
 export default function Messenger(props) {
   const messagesCollectionRef = collection(db, "messages");
@@ -30,6 +31,31 @@ export default function Messenger(props) {
   const [correction, setCorrection] = React.useState(""); // value of correction textarea input in correctMessage
 
   const [selectedWords, setSelectedWords] = React.useState([]); // words selected by learner, array of objects, keys: word, messageId
+
+  // --------------------------------------- TRANSLATE-------------------------------------------
+
+  // // Imports the Google Cloud client library
+  // const { Translate } = require("@google-cloud/translate").v2;
+
+  // // Creates a client
+  // const translate = new Translate();
+
+  // const text = "The text to translate, e.g. Hello, world!";
+  // const target = "kr";
+
+  // async function translateText() {
+  //   // Translates the text into the target language. "text" can be a string for
+  //   // translating a single piece of text, or an array of strings for translating
+  //   // multiple texts.
+  //   let [translations] = await translate.translate(text, target);
+  //   translations = Array.isArray(translations) ? translations : [translations];
+  //   console.log("Translations:");
+  //   translations.forEach((translation, i) => {
+  //     console.log(`${text[i]} => (${target}) ${translation}`);
+  //   });
+  // }
+
+  // translateText();
 
   // ---------------------------------------- AUDIO -----------------------------------------------
 
