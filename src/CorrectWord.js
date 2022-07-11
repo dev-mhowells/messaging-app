@@ -70,9 +70,9 @@ export default function (props) {
     `${props.selectedWord.messageId}/${props.selectedWord.word}`
   );
 
-  function clearMediaBlob() {
-    mediaBlobUrl = null;
-  }
+  // function clearMediaBlob() {
+  //   mediaBlobUrl = null;
+  // }
 
   //   object sent to firebase.. might not need messageId
   // IS AUDIO AND BLOB URL ARE JUST ATTEMPTS TO COMMUNICATE TO MESSAGE.JS THAT THERE IS A MESSAGE --
@@ -141,7 +141,7 @@ export default function (props) {
         className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4 border-none rounded-md w-1/3 self-end mb-4"
         onClick={() => {
           addExplainedWord();
-          clearMediaBlob();
+          // clearMediaBlob();
         }}
       >
         send

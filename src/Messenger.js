@@ -61,16 +61,16 @@ export default function Messenger(props) {
 
   // THIS ISN'T NEEDED HERE?????
   // Create a reference with an initial file path and name
-  const storage = getStorage();
-  const audioRef = ref(storage, "audio");
+  // const storage = getStorage();
+  // const audioRef = ref(storage, "audio");
 
-  getDownloadURL(audioRef)
-    .then((url) => {
-      console.log(url);
-    })
-    .catch((error) => {
-      // Handle any errors
-    });
+  // getDownloadURL(audioRef)
+  //   .then((url) => {
+  //     console.log(url);
+  //   })
+  //   .catch((error) => {
+  //     // Handle any errors
+  //   });
 
   // ------------------------------------- MESSENGER ACTUAL ----------------------------------------
 
@@ -236,11 +236,7 @@ export default function Messenger(props) {
               <Route
                 exact
                 path={`correctWord/${word.word}`}
-                element={
-                  <CorrectWord
-                    selectedWord={word}
-                  />
-                }
+                element={<CorrectWord selectedWord={word} />}
               ></Route>
             ))}
           </Route>
