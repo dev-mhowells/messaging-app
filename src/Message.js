@@ -33,6 +33,9 @@ export default function Message(props) {
   // ---------------------------------- FIREBASE AUDIO ---------------------------------------------
 
   const [wordBlob, setWordBlob] = React.useState();
+  const [wordBlobs, setWordBlobs] = React.useState([]);
+
+  // console.log("WORDBLOB", wordBlob);
 
   // Get a reference to the storage service, which is used to create references in your storage bucket
   const storage = getStorage();
@@ -41,8 +44,64 @@ export default function Message(props) {
   const storageRef = ref(storage);
 
   // Create a child reference as messageId
-  // loop through words in message, if math in audioRef, display audio, if no, don't =-- THIS NEXT
-  const audioRef = ref(storage, `${props.message.id}/hello`);
+  // loop through words in message, if match in audioRef, display audio, if no, don't =-- THIS NEXT
+  const audioRef = ref(storage, `${props.message.id}/too`);
+  const audioRef1 = ref(storage, `${props.message.id}/hello`);
+
+  const audioRefs = [audioRef, audioRef1];
+
+  // function getBlobs() {
+  //   if (props.message.words) {
+  //     for (let word of props.message.words) {
+  //       console.log("WORD", word.word);
+  //       const wordAudioRef = ref(storage, `${props.message.id}/${word.word}`);
+  //       console.log("WORD AUDIO REF", wordAudioRef);
+  //       getDownloadURL(wordAudioRef)
+  //         .then((url) => {
+  //           setWordBlobs((prevWordBlobs) => [...prevWordBlobs, url]);
+  //         })
+  //         .catch((error) => {
+  //           switch (error.code) {
+  //             case "storage/object-not-found":
+  //               // File doesn't exist
+  //               break;
+  //             case "storage/unauthorized":
+  //               // User doesn't have permission to access the object
+  //               break;
+  //             case "storage/canceled":
+  //               // User canceled the upload
+  //               break;
+  //             case "storage/unknown":
+  //               // Unknown error occurred, inspect the server response
+  //               break;
+  //           }
+  //         });
+  //     }
+  //   }
+  // }
+
+  // console.log("BLOBS ARRAY", wordBlobs);
+  // getBlobs();
+
+  // const audioDisplay = wordBlobs.map((blob) => (
+  //   <audio src={blob} controls autoPlay loop />
+  // ));
+
+  // function displayAudioAgain() {
+  //   let audioSource;
+
+  //   if (props.message.words) {
+  //     for (let word of props.message.words) {
+  //       if (Object.hasOwn(word, "blobUrl")) {
+  //         const audioRef = ref(storage, `${props.message.id}/${word.word}`);
+  //         getDownloadURL(audioRef).then((url) => {
+  //           audioSource = url;
+  //         });
+  //       }
+  //     }
+  //   }
+  //   return <audio src={audioSource} controls autoPlay loop />;
+  // }
 
   function getBlob() {
     getDownloadURL(audioRef)
@@ -66,7 +125,35 @@ export default function Message(props) {
         }
       });
   }
-  getBlob();
+
+  function getBlob2() {
+    for (let ref of audioRefs) {
+      getDownloadURL(ref)
+        .then((url) => {
+          setWordBlobs((prevWordBlobs) => [...prevWordBlobs, url]);
+        })
+        .catch((error) => {
+          switch (error.code) {
+            case "storage/object-not-found":
+              // File doesn't exist
+              break;
+            case "storage/unauthorized":
+              // User doesn't have permission to access the object
+              break;
+            case "storage/canceled":
+              // User canceled the upload
+              break;
+            case "storage/unknown":
+              // Unknown error occurred, inspect the server response
+              break;
+          }
+        });
+    }
+  }
+
+  // get the blob from firebase
+  // getBlob();
+  getBlob2(); // THIS CAUSES SOME KIND OF INFINITE LOOP
 
   // NEED TO ADD TO END OF BELOW, DICTATES WHETHER AUDIO CONTROLS SHOULD BE SHOWN
 
@@ -85,6 +172,7 @@ export default function Message(props) {
         onClick={() => {
           toggler(isSelected);
           props.getMessageToEdit(props.message);
+          // getBlobs();
         }}
       >
         {!props.message.selected ? (
@@ -104,9 +192,14 @@ export default function Message(props) {
         props.message.words.map(
           (word) =>
             Object.hasOwn(word, "isAudio") && (
-              <audio src={wordBlob} controls autoPlay loop />
+              <audio src={wordBlobs[1]} controls autoPlay loop />
             )
         )}
+      {/* {audioRefs.map((ref) => {
+        <audio src={ref} controls autoPlay loop />;
+      })} */}
+      {/* {audioDisplay} */}
+      {/* {displayAudioAgain()} */}
     </div>
   );
 }
