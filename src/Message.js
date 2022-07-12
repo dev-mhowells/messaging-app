@@ -52,126 +52,14 @@ export default function Message(props) {
 
   const audioRefs = [audioRef, audioRef1];
 
-  // function getBlobs() {
-  //   if (props.message.words) {
-  //     for (let word of props.message.words) {
-  //       console.log("WORD", word.word);
-  //       const wordAudioRef = ref(storage, `${props.message.id}/${word.word}`);
-  //       console.log("WORD AUDIO REF", wordAudioRef);
-  //       getDownloadURL(wordAudioRef)
-  //         .then((url) => {
-  //           setWordBlobs((prevWordBlobs) => [...prevWordBlobs, url]);
-  //         })
-  //         .catch((error) => {
-  //           switch (error.code) {
-  //             case "storage/object-not-found":
-  //               // File doesn't exist
-  //               break;
-  //             case "storage/unauthorized":
-  //               // User doesn't have permission to access the object
-  //               break;
-  //             case "storage/canceled":
-  //               // User canceled the upload
-  //               break;
-  //             case "storage/unknown":
-  //               // Unknown error occurred, inspect the server response
-  //               break;
-  //           }
-  //         });
-  //     }
-  //   }
-  // }
-
-  // console.log("BLOBS ARRAY", wordBlobs);
-  // getBlobs();
-
-  // const audioDisplay = wordBlobs.map((blob) => (
-  //   <audio src={blob} controls autoPlay loop />
-  // ));
-
-  // function displayAudioAgain() {
-  //   let audioSource;
-
-  //   if (props.message.words) {
-  //     for (let word of props.message.words) {
-  //       if (Object.hasOwn(word, "blobUrl")) {
-  //         const audioRef = ref(storage, `${props.message.id}/${word.word}`);
-  //         getDownloadURL(audioRef).then((url) => {
-  //           audioSource = url;
-  //         });
-  //       }
-  //     }
-  //   }
-  //   return <audio src={audioSource} controls autoPlay loop />;
-  // }
-
-  // function getBlob() {
-  //   getDownloadURL(audioRef)
-  //     .then((url) => {
-  //       setWordBlob(url);
-  //     })
-  //     .catch((error) => {
-  //       switch (error.code) {
-  //         case "storage/object-not-found":
-  //           // File doesn't exist
-  //           break;
-  //         case "storage/unauthorized":
-  //           // User doesn't have permission to access the object
-  //           break;
-  //         case "storage/canceled":
-  //           // User canceled the upload
-  //           break;
-  //         case "storage/unknown":
-  //           // Unknown error occurred, inspect the server response
-  //           break;
-  //       }
-  //     });
-  // }
-
-  // function getBlob2() {
-  //   for (let ref of audioRefs) {
-  //     getDownloadURL(ref)
-  //       .then((url) => {
-  //         setWordBlobs((prevWordBlobs) => [...prevWordBlobs, url]);
-  //       })
-  //       .catch((error) => {
-  //         switch (error.code) {
-  //           case "storage/object-not-found":
-  //             // File doesn't exist
-  //             break;
-  //           case "storage/unauthorized":
-  //             // User doesn't have permission to access the object
-  //             break;
-  //           case "storage/canceled":
-  //             // User canceled the upload
-  //             break;
-  //           case "storage/unknown":
-  //             // Unknown error occurred, inspect the server response
-  //             break;
-  //         }
-  //       });
-  //   }
-  // }
-
-  // bc it doesn't make sense with audiourl being string with 2 thingys...?
-  // function getBlobNoState(audioRefs) {
-  //   let audioUrl = "";
-  //   for (let ref of audioRefs) {
-  //     getDownloadURL(ref).then((url) => {
-  //       console.log("URL", url);
-  //       audioUrl = url;
-  //       console.log("audioUrl", audioUrl);
-  //     });
-  //   }
-  //   return <audio src={audioUrl} controls autoPlay loop />;
-  // }
+  // ------------------ AUDIO STUFF - COME BACK LATER ---------------------------------------------------------------
 
   function displayAudioPlayers() {
     if (props.message.words) {
       let arrForBlobs = [];
       for (let wordObj of props.message.words) {
         if (wordObj.blobUrl) {
-          arrForBlobs.push(wordObj.blobUrl);
+          arrForBlobs.push(wordObj.word);
           console.log("ARR FOR BLOBS", arrForBlobs);
         }
       }
@@ -180,6 +68,14 @@ export default function Message(props) {
       ));
     }
   }
+
+  // const blobMap = wordBlobs.map((blob, i) => {
+  //   getDownloadURL(audioRef).then((url) => {
+  //     setWordBlob((prevWordBlob) => [...prevWordBlob, url]);
+  //   });
+  //   console.log("THIS IS BLOB", blob);
+  //   return <audio src={wordBlob[i]} controls autoPlay loop />;
+  // });
 
   // THIS WORKS - RETURNS SPECIFIC AUDIO FILE BUT DYNAMICALLY FOR EACH WORD WITH AN ASSOCIATED AUDIO FILE
   function getBlobNoState() {
@@ -193,37 +89,6 @@ export default function Message(props) {
     getBlobNoState();
     return displayAudioPlayers();
   }
-  // WORKING
-  // function getBlobNoState() {
-  //   getDownloadURL(audioRef).then((url) => {
-  //     setWordBlob(url);
-  //   });
-  //   if (props.message.words) {
-  //     for (let wordObj of props.message.words) {
-  //       if (wordObj.blobUrl) {
-  //         console.log("ARR FOR BLOBS", arrForBlobs);
-  //         return <audio src={wordBlob} controls autoPlay loop />;
-  //       }
-  //     }
-  //   }
-  // }
-
-  // function getBlobNoState2() {
-  //   getDownloadURL(audioRef).then((url) => {
-  //     setWordBlob(url);
-  //   });
-  //   if (props.message.words) {
-  //     for (let wordObj of props.message.words) {
-  //       if (wordObj.blobUrl) {
-  //       }
-  //     }
-  //   }
-  // }
-
-  // function displayAllAudio() {
-  //   if(props.message.words) {
-  //     props.message.words.map((wordObj) => )
-  //   } }
 
   return (
     <div
@@ -256,20 +121,7 @@ export default function Message(props) {
         props.message.words.map((wordObj) => (
           <p className="p-2">{`${wordObj.word}: ${wordObj.definition}`}</p>
         ))}
-      {/* {props.message.words &&
-        props.message.words.map(
-          (word) =>
-            Object.hasOwn(word, "isAudio") && (
-              <audio src={wordBlobs[1]} controls autoPlay loop />
-            )
-        )} */}
-      {/* {audioRefs.map((ref) => {
-        <audio src={ref} controls autoPlay loop />;
-      })} */}
-      {/* {audioDisplay} */}
-      {/* {displayAudioAgain()} */}
-      {/* {getBlobNoState()} */}
-      {getBlobAndDisplay()}
+      {/* {getBlobAndDisplay()} */}
     </div>
   );
 }

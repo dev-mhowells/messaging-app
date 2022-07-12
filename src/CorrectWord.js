@@ -1,5 +1,5 @@
 import React from "react";
-import { arrayUnion, doc, setDoc, updateDoc } from "firebase/firestore";
+import { arrayUnion, doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "./firebase-config";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -7,12 +7,78 @@ import sampleSound from "./media/birds.mp3";
 import { useReactMediaRecorder } from "react-media-recorder";
 
 export default function (props) {
+  const [allCorrectedWordObj, setAllCorrectedWordObj] = React.useState([]);
   const [definition, setDefinition] = React.useState("");
-  const [isAudio, setIsAudio] = React.useState(false); // changes to true onStop of audio recorder
+
+  // this works but I still need to get the data from FB so..
+  function checkIfWordCorrected() {
+    for (let messageObj of props.messages) {
+      if (messageObj.words) {
+        for (let wordObj of messageObj.words) {
+          console.log("WORD IN ARR", wordObj);
+          if (wordExplained.word === wordObj.word) {
+            console.log("DOUBLE FOUND");
+            // REPLACE
+          } else {
+            console.log("NOT DOUBLE");
+            // ADD
+          }
+        }
+      }
+    }
+  }
+
+  // React.useEffect(() => {
+  //   async function getWordArray() {
+  //     const docRef = doc(db, "messages", props.selectedWord.messageId);
+  //     const docSnap = await getDoc(docRef);
+
+  //     if (docSnap.exists()) {
+  //       const correctedWordObjs = docSnap.data().words;
+  //       console.log("corrected words", correctedWordObjs);
+  //       setAllCorrectedWordObj(correctedWordObjs);
+  //     }
+  //   }
+
+  //   getWordArray();
+  // }, []);
+
+  // console.log("STATE", allCorrectedWordObj);
+  const docRef = doc(db, "messages", props.selectedWord.messageId);
+
+  // returns current array of word objects in FB for the message
+  async function getWordArray() {
+    let correctedWordObjs;
+    // const docRef = doc(db, "messages", props.selectedWord.messageId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      correctedWordObjs = docSnap.data().words;
+    }
+    console.log("GET OBJYS", correctedWordObjs);
+    return correctedWordObjs;
+  }
+
+  async function updateWordObjArr() {
+    const correctedWordObjs = await getWordArray();
+    console.log("GOTTEN OBJYS", correctedWordObjs);
+    const updatedArr = correctedWordObjs.map((wordObj) => {
+      console.log("EACH OBYS", wordObj);
+      if (wordObj.word === wordExplained.word) {
+        return wordExplained;
+      } else {
+        return;
+      }
+    });
+    console.log("ARR TO UPLOAD", updatedArr);
+    // return updatedArr;
+  }
 
   async function addExplainedWord() {
-    const ref = doc(db, "messages", props.selectedWord.messageId);
-    await updateDoc(ref, {
+    // CHECK IF WORD EXISTS:
+
+    // const ref = doc(db, "messages", props.selectedWord.messageId);
+    await updateDoc(docRef, {
       words: arrayUnion(wordExplained),
     });
   }
@@ -51,12 +117,11 @@ export default function (props) {
     onStop: (blobUrl, blob) => {
       console.log("onstop happened");
       // getBlob();
-      setIsAudio(true);
       uploadAudio(blob);
     },
   });
 
-  // FIREBASE ---------------------------------------------------------------------------------------
+  // --------------------------------------AUDIO NOT RELEVANT YET -------------------------------------------------
 
   // Get a reference to the storage service, which is used to create references in your storage bucket
   const storage = getStorage();
@@ -69,21 +134,6 @@ export default function (props) {
     storage,
     `${props.selectedWord.messageId}/${props.selectedWord.word}`
   );
-
-  // function clearMediaBlob() {
-  //   mediaBlobUrl = null;
-  // }
-
-  //   object sent to firebase.. might not need messageId
-  // IS AUDIO AND BLOB URL ARE JUST ATTEMPTS TO COMMUNICATE TO MESSAGE.JS THAT THERE IS A MESSAGE --
-  // MAYBE BEST JUST TO CHECK MESSAGE WITH STORAGE ANYWAY
-  const wordExplained = {
-    messageId: props.selectedWord.messageId,
-    word: props.selectedWord.word,
-    definition,
-    isAudio,
-    blobUrl: mediaBlobUrl ? mediaBlobUrl : null,
-  };
 
   // mediaBlobUrl set as source because if use state as source, there is a delay
   function record() {
@@ -108,6 +158,18 @@ export default function (props) {
       </div>
     );
   }
+
+  // ---------------------------------------------- CORE -----------------------------------------------------------
+
+  //   object sent to firebase.. might not need messageId
+  // BLOB URL ARE JUST ATTEMPTS TO COMMUNICATE TO MESSAGE.JS THAT THERE IS AUDIO -- NOT CURRENTLY IN USE
+  const wordExplained = {
+    messageId: props.selectedWord.messageId,
+    word: props.selectedWord.word,
+    definition,
+    blobUrl: mediaBlobUrl ? mediaBlobUrl : null,
+    // audioRef: audioRef ? audioRef : null, // CAUSES ERROR
+  };
 
   return (
     <section className=" w-2/5 flex flex-col gap-4 border-t-2 border-sky-700 text-xs">
@@ -141,7 +203,8 @@ export default function (props) {
         className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4 border-none rounded-md w-1/3 self-end mb-4"
         onClick={() => {
           addExplainedWord();
-          // clearMediaBlob();
+          // getWordArray();
+          updateWordObjArr();
         }}
       >
         send

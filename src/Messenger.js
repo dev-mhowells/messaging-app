@@ -138,11 +138,9 @@ export default function Messenger(props) {
 
   function getSelectedTab(e) {
     setSelectedTab(e.target.text);
-    console.log("TARGET", e.target.text);
   }
 
   const allSelectedWords = selectedWords.map((wordObj) => {
-    console.log("CURRENT WORD", wordObj.word);
     return (
       <Link
         to={`console/correctWord/${wordObj.word}`}
@@ -236,7 +234,9 @@ export default function Messenger(props) {
               <Route
                 exact
                 path={`correctWord/${word.word}`}
-                element={<CorrectWord selectedWord={word} />}
+                element={
+                  <CorrectWord selectedWord={word} messages={messages} />
+                }
               ></Route>
             ))}
           </Route>
