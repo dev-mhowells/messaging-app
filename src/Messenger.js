@@ -140,20 +140,40 @@ export default function Messenger(props) {
     setSelectedTab(e.target.text);
   }
 
+  // removes word from list of selected words which shows tabs
+  function removeTab(word) {
+    // returns index where word is equal to wordObj.word of selectedWords
+    const index = selectedWords.findIndex((wordObj) => {
+      return wordObj.word === word;
+    });
+    // sets selectedWords as new filtered array, excluding the index of word passed in to func
+    setSelectedWords((prevSelectedWords) =>
+      prevSelectedWords.filter((wordObj, i) => i !== index)
+    );
+  }
+
+  function tabReset() {}
+
+  // all word tabs
   const allSelectedWords = selectedWords.map((wordObj) => {
     return (
-      <Link
-        to={`console/correctWord/${wordObj.word}`}
+      <div
         className={`${
           wordObj.word === selectedTab ? "bg-sky-700" : "bg-sky-400"
-        } hover:bg-sky-900 text-white py-1 px-2 rounded-t-md`}
-        onClick={getSelectedTab}
+        } hover:bg-sky-900 text-white py-1 px-2 rounded-t-md flex gap-1`}
       >
-        {wordObj.word}
-      </Link>
+        <Link
+          to={`console/correctWord/${wordObj.word}`}
+          onClick={getSelectedTab}
+        >
+          {wordObj.word}
+        </Link>
+        <p onClick={() => removeTab(wordObj.word)}> x </p>
+      </div>
     );
   });
 
+  // tab for editing full message
   const messageTab = messageToEdit && (
     <Link
       to={`console/correctMessage`}
