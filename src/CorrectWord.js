@@ -43,6 +43,8 @@ export default function (props) {
   //   getWordArray();
   // }, []);
 
+  // ------------------------ WORKING IN THIS SECTION, NEARLY THERE, YOU CAN DO IT!!! -----------------------
+
   // console.log("STATE", allCorrectedWordObj);
   const docRef = doc(db, "messages", props.selectedWord.messageId);
 
@@ -59,29 +61,54 @@ export default function (props) {
     return correctedWordObjs;
   }
 
+  function removeDupes(arr) {
+    const wordIds = [];
+
+    const uniqueArr = arr.filter((el) => {
+      const isDupe = wordIds.includes(el.word);
+
+      if (!isDupe) {
+        wordIds.push(el.word);
+        return true;
+      }
+      return false;
+    });
+    console.log("UNIQUE", uniqueArr);
+    return uniqueArr;
+  }
+
   async function updateWordObjArr() {
+    // get corrected words array from FB
     const correctedWordObjs = await getWordArray();
     console.log("GOTTEN OBJYS", correctedWordObjs);
+    // add current wordExplained object
+    correctedWordObjs.push(wordExplained);
+    // check if each wordObj.word matches wordExplained.word
+    // if it does, replace wordObj with wordExplained
+    // if it doesn't, just return the wordObj
+    // this does't eliminate duplicates though
     const updatedArr = correctedWordObjs.map((wordObj) => {
       console.log("EACH OBYS", wordObj);
       if (wordObj.word === wordExplained.word) {
         return wordExplained;
       } else {
-        return;
+        return wordObj;
       }
     });
     console.log("ARR TO UPLOAD", updatedArr);
     // return updatedArr;
+    const newArr = removeDupes(updatedArr);
+    setDoc(docRef, { words: newArr }, { merge: true });
   }
 
-  async function addExplainedWord() {
-    // CHECK IF WORD EXISTS:
+  // async function addExplainedWord() {
+  //   // CHECK IF WORD EXISTS:
 
-    // const ref = doc(db, "messages", props.selectedWord.messageId);
-    await updateDoc(docRef, {
-      words: arrayUnion(wordExplained),
-    });
-  }
+  //   // const ref = doc(db, "messages", props.selectedWord.messageId);
+  //   await updateDoc(docRef, {
+  //     words: arrayUnion(wordExplained),
+  //   });
+  // }
 
   // for onchange for definition feild, captures input and sets to definition state
   function handleDefinition(e) {
@@ -202,7 +229,7 @@ export default function (props) {
       <button
         className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4 border-none rounded-md w-1/3 self-end mb-4"
         onClick={() => {
-          addExplainedWord();
+          // addExplainedWord();
           // getWordArray();
           updateWordObjArr();
         }}
