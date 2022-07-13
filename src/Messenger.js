@@ -16,7 +16,13 @@ import {
 import { db, auth } from "./firebase-config";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 // import { Translate } from "@google-cloud/translate/build/src/v2";
 
 export default function Messenger(props) {
@@ -152,9 +158,20 @@ export default function Messenger(props) {
     );
   }
 
-  function tabReset() {}
+  const navigate = useNavigate();
 
-  // all word tabs
+  // finds the word before the one in the current tab from arr of selected words
+  // navigates to that word
+  function tabReset(word) {
+    const index = selectedWords.findIndex((wordObj) => {
+      return wordObj.word === word;
+    });
+    const newTabNameTemp = selectedWords[index - 1].word;
+
+    navigate(`console/correctWord/${newTabNameTemp}`);
+  }
+
+  // creates all word tabs
   const allSelectedWords = selectedWords.map((wordObj) => {
     return (
       <div
@@ -168,7 +185,14 @@ export default function Messenger(props) {
         >
           {wordObj.word}
         </Link>
-        <p onClick={() => removeTab(wordObj.word)}> x </p>
+        <p
+          onClick={() => {
+            removeTab(wordObj.word);
+            tabReset(wordObj.word);
+          }}
+        >
+          x
+        </p>
       </div>
     );
   });
