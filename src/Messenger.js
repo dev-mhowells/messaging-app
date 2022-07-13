@@ -285,7 +285,12 @@ export default function Messenger(props) {
                 exact
                 path={`correctWord/${word.word}`}
                 element={
-                  <CorrectWord selectedWord={word} messages={messages} />
+                  <CorrectWord
+                    selectedWord={word}
+                    messages={messages}
+                    removeTab={removeTab}
+                    tabReset={tabReset}
+                  />
                 }
               ></Route>
             ))}

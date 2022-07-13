@@ -3,6 +3,7 @@ import { auth } from "./firebase-config";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import sampleSound from "./media/birds.mp3";
+import CorrectionDropdown from "./CorrectionDropdown";
 
 export default function Message(props) {
   const [isSelected, setIsSelected] = React.useState(false);
@@ -54,41 +55,59 @@ export default function Message(props) {
 
   // ------------------ AUDIO STUFF - COME BACK LATER ---------------------------------------------------------------
 
-  function displayAudioPlayers() {
-    if (props.message.words) {
-      let arrForBlobs = [];
-      for (let wordObj of props.message.words) {
-        if (wordObj.blobUrl) {
-          arrForBlobs.push(wordObj.word);
-          console.log("ARR FOR BLOBS", arrForBlobs);
-        }
-      }
-      return arrForBlobs.map((blob) => (
-        <audio src={wordBlob} controls autoPlay loop />
-      ));
+  // THIS WORKS FOR GETTING ONE SPECIFIC BIT OF AUDIO --- HOW TO SCALE ???
+
+  const [oneRef, setOneRef] = React.useState("");
+
+  function oneMoreTry() {
+    if (props.message.id === "kZmRnRq8lwEQg9mRxABP") {
+      getDownloadURL(ref(storage, `${props.message.id}/d`)).then((url) => {
+        setOneRef(url);
+      });
+      return <audio src={oneRef} controls loop />;
     }
   }
 
-  // const blobMap = wordBlobs.map((blob, i) => {
-  //   getDownloadURL(audioRef).then((url) => {
-  //     setWordBlob((prevWordBlob) => [...prevWordBlob, url]);
-  //   });
-  //   console.log("THIS IS BLOB", blob);
-  //   return <audio src={wordBlob[i]} controls autoPlay loop />;
-  // });
+  // ABOVE WORKS ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-  // THIS WORKS - RETURNS SPECIFIC AUDIO FILE BUT DYNAMICALLY FOR EACH WORD WITH AN ASSOCIATED AUDIO FILE
-  function getBlobNoState() {
-    getDownloadURL(audioRef).then((url) => {
-      setWordBlob(url);
-    });
+  function getAllUrls() {
+    for (let wordObj of props.message.words) {
+      if (wordObj.forAudioRef) {
+        getDownloadURL(ref(storage, `${wordObj.forAudioRef}`)).then((url) => {
+          console.log("URL", url);
+        });
+      }
+    }
   }
 
-  // this is the function to be rendered
-  function getBlobAndDisplay() {
-    getBlobNoState();
-    return displayAudioPlayers();
+  function getAllUrls2() {
+    let allUrls = [];
+    for (let wordObj of props.message.words) {
+      if (wordObj.forAudioRef) {
+        getDownloadURL(ref(storage, `${wordObj.forAudioRef}`)).then((url) => {
+          allUrls.push(url);
+        });
+      }
+    }
+    return allUrls;
   }
+  // returns empty array b/c async?
+
+  const [allUrls, setAllUrls] = React.useState([]);
+
+  function getAllUrls3() {
+    for (let wordObj of props.message.words) {
+      if (wordObj.forAudioRef) {
+        getDownloadURL(ref(storage, `${wordObj.forAudioRef}`)).then((url) => {
+          setAllUrls((prevArr) => [...prevArr, url]);
+        });
+      }
+    }
+  }
+
+  // produces infinite loop when called
+
+  // --------------------------------------------------------------------------------------------------
 
   return (
     <div
@@ -118,10 +137,26 @@ export default function Message(props) {
         <p className="p-2">{props.message.correction}</p>
       )}
       {props.message.words &&
+        // props.message.words.map((wordObj) => (
+        //   <div className="p-2 flex flex-col gap-1">
+        //     <p>
+        //       {`${wordObj.word}`} <button onClick={toggleDropDown}>drop</button>
+        //     </p>
+        //     {dropDown && (
+        //       <div>
+        //         <p> {`synonyms: ${wordObj.synonyms}`}</p>
+        //         <p> {`examples: ${wordObj.examples}`}</p>
+        //         <p> {`more: ${wordObj.extra}`}</p>
+        //       </div>
+        //     )}
+        //   </div>
+        // ))
         props.message.words.map((wordObj) => (
-          <p className="p-2">{`${wordObj.word}: ${wordObj.definition}`}</p>
+          <CorrectionDropdown wordObj={wordObj} message={props.message} />
         ))}
-      {/* {getBlobAndDisplay()} */}
+
+      {oneMoreTry()}
+      {/* {getAllUrls2()} */}
     </div>
   );
 }

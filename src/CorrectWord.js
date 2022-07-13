@@ -8,7 +8,9 @@ import { useReactMediaRecorder } from "react-media-recorder";
 
 export default function (props) {
   const [allCorrectedWordObj, setAllCorrectedWordObj] = React.useState([]);
-  const [definition, setDefinition] = React.useState("");
+  const [examples, setExamples] = React.useState("");
+  const [synonyms, setSynonyms] = React.useState("");
+  const [extra, setExtra] = React.useState("");
 
   // this works but I still need to get the data from FB so..
   function checkIfWordCorrected() {
@@ -45,7 +47,6 @@ export default function (props) {
 
   // ------------------------ WORKING IN THIS SECTION, NEARLY THERE, YOU CAN DO IT!!! -----------------------
 
-  // console.log("STATE", allCorrectedWordObj);
   const docRef = doc(db, "messages", props.selectedWord.messageId);
 
   // returns current array of word objects in FB for the message
@@ -61,6 +62,7 @@ export default function (props) {
     return correctedWordObjs;
   }
 
+  // creates new array removing any duplicate objects
   function removeDupes(arr) {
     const wordIds = [];
 
@@ -80,7 +82,7 @@ export default function (props) {
   async function updateWordObjArr() {
     // get corrected words array from FB
     const correctedWordObjs = await getWordArray();
-    console.log("GOTTEN OBJYS", correctedWordObjs);
+
     // add current wordExplained object
     correctedWordObjs.push(wordExplained);
     // check if each wordObj.word matches wordExplained.word
@@ -88,16 +90,16 @@ export default function (props) {
     // if it doesn't, just return the wordObj
     // this does't eliminate duplicates though
     const updatedArr = correctedWordObjs.map((wordObj) => {
-      console.log("EACH OBYS", wordObj);
       if (wordObj.word === wordExplained.word) {
         return wordExplained;
       } else {
         return wordObj;
       }
     });
-    console.log("ARR TO UPLOAD", updatedArr);
-    // return updatedArr;
+
+    // eliminate duplicates
     const newArr = removeDupes(updatedArr);
+    // upload new array, replacing the old one
     setDoc(docRef, { words: newArr }, { merge: true });
   }
 
@@ -111,8 +113,22 @@ export default function (props) {
   // }
 
   // for onchange for definition feild, captures input and sets to definition state
-  function handleDefinition(e) {
-    setDefinition(e.target.value);
+  function handleExamples(e) {
+    setExamples(e.target.value);
+  }
+
+  function handleSynonyms(e) {
+    setSynonyms(e.target.value);
+  }
+
+  function handleExtra(e) {
+    setExtra(e.target.value);
+  }
+
+  function clearInputs() {
+    setExamples("");
+    setSynonyms("");
+    setExtra("");
   }
 
   // MEDIA REACT ----------------------------------------------------------------------------------
@@ -142,7 +158,7 @@ export default function (props) {
       // props.setAudioBlob("");
     },
     onStop: (blobUrl, blob) => {
-      console.log("onstop happened");
+      console.log("onstop happened", console.log(mediaBlobUrl));
       // getBlob();
       uploadAudio(blob);
     },
@@ -193,35 +209,32 @@ export default function (props) {
   const wordExplained = {
     messageId: props.selectedWord.messageId,
     word: props.selectedWord.word,
-    definition,
-    blobUrl: mediaBlobUrl ? mediaBlobUrl : null,
-    // audioRef: audioRef ? audioRef : null, // CAUSES ERROR
+    synonyms,
+    examples,
+    extra,
+    forAudioRef: `${props.selectedWord.messageId}/${props.selectedWord.word}`,
   };
 
   return (
     <section className=" w-2/5 flex flex-col gap-4 border-t-2 border-sky-700 text-xs">
-      <p className="mt-4">Type</p>
-      <div className="h-20 w-300 p-3 rounded-md border-2 border-sky-700">
-        <button className="bg-sky-400 border rounded-md p-1 text-white mr-2">
-          noun
-        </button>
-        <button className="bg-sky-400 border rounded-md p-1 text-white mr-2">
-          verb
-        </button>
-        <button className="bg-sky-400 border rounded-md p-1 text-white mr-2">
-          adjective
-        </button>
-        <button className="bg-sky-400 border rounded-md p-1 text-white mr-2">
-          adverb
-        </button>
-      </div>
-      <p>Definition</p>
+      <p className="mt-4">Synonyms</p>
       <textarea
         className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none"
-        onChange={handleDefinition}
+        onChange={handleSynonyms}
+        value={synonyms}
       ></textarea>
       <p>Examples</p>
-      <textarea className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none"></textarea>
+      <textarea
+        className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none"
+        onChange={handleExamples}
+        value={examples}
+      ></textarea>
+      <p>Extra</p>
+      <textarea
+        className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none"
+        onChange={handleExtra}
+        value={extra}
+      ></textarea>
       <p>Pronunciation</p>
       <div className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none">
         {record()}
@@ -232,6 +245,10 @@ export default function (props) {
           // addExplainedWord();
           // getWordArray();
           updateWordObjArr();
+          // controls tab redirects
+          props.removeTab(props.selectedWord.word);
+          props.tabReset(props.selectedWord.word);
+          clearInputs();
         }}
       >
         send
