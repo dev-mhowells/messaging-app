@@ -166,9 +166,15 @@ export default function Messenger(props) {
     const index = selectedWords.findIndex((wordObj) => {
       return wordObj.word === word;
     });
-    const newTabNameTemp = selectedWords[index - 1].word;
-
-    navigate(`console/correctWord/${newTabNameTemp}`);
+    // controls direction in which new tab is selected upon tab close
+    const newTab =
+      index < selectedWords.length - 1
+        ? selectedWords[index + 1].word
+        : selectedWords[index - 1].word;
+    // changes tab colour
+    setSelectedTab(newTab);
+    // redirects
+    navigate(`console/correctWord/${newTab}`);
   }
 
   // creates all word tabs
