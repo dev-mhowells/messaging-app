@@ -103,7 +103,7 @@ export default function Messenger(props) {
       doc(db, "selectedWords", "wordsArr"),
       (doc) => {
         console.log("CurrentData2", doc.data());
-        setSelectedWords2(doc.data().words);
+        setSelectedWords(doc.data().words);
       }
     );
   }, []);
@@ -157,13 +157,13 @@ export default function Messenger(props) {
 
   // ARRAY - USED FOR SETTING TABS FOR EACH WORD AND ID IS USED BY CORRECTMESSAGE
   // TO FIND MESSAGE ASSOCIATED WITH WORD... CALLED IN MESSAGE.JS
-  function getSelectedWords(word, messageId) {
-    setSelectedWords((prevSelectedWords) => [
-      ...prevSelectedWords,
-      { word, messageId },
-    ]);
-    // setSelectedWord(word);
-  }
+  // function getSelectedWords(word, messageId) {
+  //   setSelectedWords((prevSelectedWords) => [
+  //     ...prevSelectedWords,
+  //     { word, messageId },
+  //   ]);
+  //   // setSelectedWord(word);
+  // }
 
   // -------------------------------------------------------------------------------------
 
@@ -173,22 +173,25 @@ export default function Messenger(props) {
     setSelectedTab(e.target.text);
   }
 
-  async function removeSelectedWordFB(word) {
+  async function removeSelectedWordFB(wordObj) {
     const selectedWordsRef = doc(db, "selectedWords", "wordsArr");
-    await updateDoc(selectedWordsRef, { words: arrayRemove(word) });
+
+    await updateDoc(selectedWordsRef, { words: arrayRemove(wordObj) });
+    console.log("THING TO REMOVE", wordObj);
   }
 
-  // removes word from list of selected words which shows tabs
-  function removeTab(word) {
-    // returns index where word is equal to wordObj.word of selectedWords
-    const index = selectedWords.findIndex((wordObj) => {
-      return wordObj.word === word;
-    });
-    // sets selectedWords as new filtered array, excluding the index of word passed in to func
-    setSelectedWords((prevSelectedWords) =>
-      prevSelectedWords.filter((wordObj, i) => i !== index)
-    );
-  }
+  // SHOULDD NOW HAPPEN AUTOMATICALLY ------------------------------
+  // // removes word from list of selected words which shows tabs
+  // function removeTab(word) {
+  //   // returns index where word is equal to wordObj.word of selectedWords
+  //   const index = selectedWords.findIndex((wordObj) => {
+  //     return wordObj.word === word;
+  //   });
+  //   // sets selectedWords as new filtered array, excluding the index of word passed in to func
+  //   setSelectedWords((prevSelectedWords) =>
+  //     prevSelectedWords.filter((wordObj, i) => i !== index)
+  //   );
+  // }
 
   const navigate = useNavigate();
 
@@ -225,9 +228,9 @@ export default function Messenger(props) {
         </Link>
         <p
           onClick={() => {
-            removeTab(wordObj.word);
+            removeSelectedWordFB(wordObj);
+            // removeTab(wordObj.word);
             tabReset(wordObj.word);
-            removeSelectedWordFB(wordObj.word);
           }}
         >
           x
@@ -279,7 +282,7 @@ export default function Messenger(props) {
       <Message
         getMessageToEdit={getMessageToEdit}
         message={message}
-        getSelectedWords={getSelectedWords}
+        // getSelectedWords={getSelectedWords}
         correctionTracker={correctionTracker}
       />
     );
@@ -345,7 +348,7 @@ export default function Messenger(props) {
                   <CorrectWord
                     selectedWord={word}
                     messages={messages}
-                    removeTab={removeTab}
+                    // removeTab={removeTab}
                     tabReset={tabReset}
                     removeSelectedWordFB={removeSelectedWordFB}
                     setCorrectionTracker={setCorrectionTracker}

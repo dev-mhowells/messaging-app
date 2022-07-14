@@ -37,8 +37,8 @@ export default function Message(props) {
     <button
       className="bg-sky-50 py-1 px-2 ml-2 rounded-md text-sm mr-2 mt-2 mb-2 hover:bg-sky-300"
       onClick={() => {
-        props.getSelectedWords(word, props.message.id);
-        updateSelectedWordsFB(word);
+        // props.getSelectedWords(word, props.message.id);
+        updateSelectedWordsFB({ word, messageId: props.message.id });
       }}
     >
       {word}
