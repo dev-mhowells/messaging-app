@@ -27,8 +27,18 @@ import {
 
 export default function Messenger(props) {
   const messagesCollectionRef = collection(db, "messages");
-
   const q = query(messagesCollectionRef, orderBy("createdAt", "asc"));
+
+  const selectedWordsCollectionRef = collection(db, "selectedWords");
+  const qSelectedWords = query(
+    selectedWordsCollectionRef,
+    orderBy("createdAt", "asc")
+  );
+
+  console.log("THIS IS DB", db);
+  console.log("SELECTED REF", selectedWordsCollectionRef);
+  console.log("qSelectedWords", qSelectedWords);
+  console.log("q", q);
 
   const [messages, setMessages] = React.useState([]); // array of message objects from firebase
   const [message, setMessage] = React.useState(""); // value of messaging input
@@ -37,6 +47,7 @@ export default function Messenger(props) {
   const [correction, setCorrection] = React.useState(""); // value of correction textarea input in correctMessage
 
   const [selectedWords, setSelectedWords] = React.useState([]); // words selected by learner, array of objects, keys: word, messageId
+  const [selectedWords2, setSelectedWords2] = React.useState([]); // words selected by learner, array of objects, keys: word, messageId
 
   // changed by correctWord to random value and used by useEffect in correction dropdown to trigger calling for audioUrls
   const [correctionTracker, setCorrectionTracker] = React.useState("");
@@ -70,6 +81,7 @@ export default function Messenger(props) {
   React.useEffect(() => {
     onSnapshot(q, (snapshot) => {
       const allMessages = snapshot.docs.map((doc) => {
+        console.log("SNAPPY1", doc.data());
         return {
           ...doc.data(),
           id: doc.id,
@@ -78,7 +90,37 @@ export default function Messenger(props) {
       });
       setMessages(allMessages);
     });
+
+    // THIS DOESN'T WORK DESPITE CODE ABOVE WORKING... CODE BELOW WORKS
+    // onSnapshot(qSelectedWords, (snapshot) => {
+    //   const allSelectedWords = snapshot.docs.map((doc) => {
+    //     console.log("DOCDATA", doc.data());
+    //     return doc.data();
+    //   });
+    //   setSelectedWords2(allSelectedWords);
+    // });
+
+    // updates selected words automatically on change in array at firebase level
+    const wordsSnap = onSnapshot(
+      doc(db, "selectedWords", "wordsArr"),
+      (doc) => {
+        console.log("CurrentData2", doc.data());
+        setSelectedWords2(doc.data().words);
+      }
+    );
   }, []);
+
+  // React.useEffect(() => {
+  //   onSnapshot(qSelectedWords, (snapshot) => {
+  //     const allSelectedWords = snapshot.docs.map((doc) => {
+  //       console.log("DOCDATA", doc.data());
+  //       return doc.data();
+  //     });
+  //     setSelectedWords2(allSelectedWords);
+  //   });
+  // }, []);
+
+  console.log("SELECTEDWORDS2", selectedWords2);
 
   // uses message state
   async function createMessage() {

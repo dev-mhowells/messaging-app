@@ -1,6 +1,8 @@
 import React from "react";
 import { auth } from "./firebase-config";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, setDoc, arrayUnion, updateDoc } from "firebase/firestore";
+import { db } from "./firebase-config";
 
 import sampleSound from "./media/birds.mp3";
 import CorrectionDropdown from "./CorrectionDropdown";
@@ -24,10 +26,20 @@ export default function Message(props) {
 
   const splitIntoWords = splitMessage(props.message.message);
 
+  const selectedWordsRef = doc(db, "selectedWords", "wordsArr");
+
+  // updates above firebase document with selected words which will be displayed as tabs to teacher
+  async function updateSelectedWordsFB(word) {
+    await updateDoc(selectedWordsRef, { words: arrayUnion(word) });
+  }
+
   const eachWord = splitIntoWords.map((word) => (
     <button
       className="bg-sky-50 py-1 px-2 ml-2 rounded-md text-sm mr-2 mt-2 mb-2 hover:bg-sky-300"
-      onClick={() => props.getSelectedWords(word, props.message.id)}
+      onClick={() => {
+        props.getSelectedWords(word, props.message.id);
+        updateSelectedWordsFB(word);
+      }}
     >
       {word}
     </button>
