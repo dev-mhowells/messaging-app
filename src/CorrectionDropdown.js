@@ -12,12 +12,23 @@ export default function CorrectionDropdown(props) {
 
   const storage = getStorage();
 
-  if (props.wordObj.forAudioRef) {
-    getDownloadURL(ref(storage, `${props.wordObj.forAudioRef}`)).then((url) => {
-      console.log("URL", url);
-      setAudioUrl(url);
-    });
-  }
+  // in useeffect to prevent a bunch of calls on rerender of any parent elements
+  // uses correctiontracker state which is updated with a random value on every word correction submit
+  // therefore only called on initial render and when an audio value is changed.
+  React.useEffect(() => {
+    function getAudio() {
+      if (props.wordObj.forAudioRef) {
+        getDownloadURL(ref(storage, `${props.wordObj.forAudioRef}`)).then(
+          (url) => {
+            console.log("URL", url);
+            setAudioUrl(url);
+          }
+        );
+      }
+      console.log("TRACKER", props.correctionTracker);
+    }
+    getAudio();
+  }, [props.correctionTracker]);
 
   return (
     <div className="p-2 flex flex-col gap-1">

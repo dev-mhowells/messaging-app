@@ -152,7 +152,11 @@ export default function Message(props) {
         //   </div>
         // ))
         props.message.words.map((wordObj) => (
-          <CorrectionDropdown wordObj={wordObj} message={props.message} />
+          <CorrectionDropdown
+            wordObj={wordObj}
+            message={props.message}
+            correctionTracker={props.correctionTracker}
+          />
         ))}
 
       {oneMoreTry()}

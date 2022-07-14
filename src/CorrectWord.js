@@ -215,6 +215,13 @@ export default function (props) {
     forAudioRef: `${props.selectedWord.messageId}/${props.selectedWord.word}`,
   };
 
+  // sets tracker to a random number, useEffect in correctionDropdown set to run when
+  // this value changes, then calls for audio - seems like a strange solution..
+  function updateTracker() {
+    props.setCorrectionTracker(Math.random() * 100);
+    console.log("CHECK");
+  }
+
   return (
     <section className=" w-2/5 flex flex-col gap-4 border-t-2 border-sky-700 text-xs">
       <p className="mt-4">Synonyms</p>
@@ -242,6 +249,7 @@ export default function (props) {
       <button
         className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4 border-none rounded-md w-1/3 self-end mb-4"
         onClick={() => {
+          updateTracker();
           // addExplainedWord();
           // getWordArray();
           updateWordObjArr();

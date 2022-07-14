@@ -38,6 +38,9 @@ export default function Messenger(props) {
 
   const [selectedWords, setSelectedWords] = React.useState([]); // words selected by learner, array of objects, keys: word, messageId
 
+  // changed by correctWord to random value and used by useEffect in correction dropdown to trigger calling for audioUrls
+  const [correctionTracker, setCorrectionTracker] = React.useState("");
+
   // --------------------------------------- TRANSLATE-------------------------------------------
 
   // // Imports the Google Cloud client library
@@ -62,22 +65,6 @@ export default function Messenger(props) {
   // }
 
   // translateText();
-
-  // ---------------------------------------- AUDIO -----------------------------------------------
-
-  // THIS ISN'T NEEDED HERE?????
-  // Create a reference with an initial file path and name
-  // const storage = getStorage();
-  // const audioRef = ref(storage, "audio");
-
-  // getDownloadURL(audioRef)
-  //   .then((url) => {
-  //     console.log(url);
-  //   })
-  //   .catch((error) => {
-  //     // Handle any errors
-  //   });
-
   // ------------------------------------- MESSENGER ACTUAL ----------------------------------------
 
   React.useEffect(() => {
@@ -224,6 +211,7 @@ export default function Messenger(props) {
         getMessageToEdit={getMessageToEdit}
         message={message}
         getSelectedWords={getSelectedWords}
+        correctionTracker={correctionTracker}
       />
     );
   });
@@ -290,6 +278,7 @@ export default function Messenger(props) {
                     messages={messages}
                     removeTab={removeTab}
                     tabReset={tabReset}
+                    setCorrectionTracker={setCorrectionTracker}
                   />
                 }
               ></Route>
