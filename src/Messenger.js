@@ -9,14 +9,13 @@ import {
   orderBy,
   serverTimestamp,
   query,
-  deleteDoc,
   doc,
   setDoc,
   updateDoc,
   arrayRemove,
 } from "firebase/firestore";
-import { db, auth } from "./firebase-config";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { db } from "./firebase-config";
+// import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import {
   BrowserRouter as Router,
@@ -25,18 +24,11 @@ import {
   Link,
   useNavigate,
 } from "react-router-dom";
-// import { Translate } from "@google-cloud/translate/build/src/v2";
+// import { Translate } from "@google-cloud/translate/build/src/v2"; // THIS CAUSES ERROR WITH INSTALL FILES
 
 export default function Messenger(props) {
   const messagesCollectionRef = collection(db, "messages");
   const q = query(messagesCollectionRef, orderBy("createdAt", "asc"));
-
-  // NOT USING THIS?????
-  const selectedWordsCollectionRef = collection(db, "selectedWords");
-  const qSelectedWords = query(
-    selectedWordsCollectionRef,
-    orderBy("createdAt", "asc")
-  );
 
   const [messages, setMessages] = React.useState([]); // array of message objects from firebase
   const [message, setMessage] = React.useState(""); // value of messaging input
@@ -45,7 +37,6 @@ export default function Messenger(props) {
   const [correction, setCorrection] = React.useState(""); // value of correction textarea input in correctMessage
 
   const [selectedWords, setSelectedWords] = React.useState([]); // words selected by learner, array of objects, keys: word, messageId
-  const [selectedWords2, setSelectedWords2] = React.useState([]); // words selected by learner, array of objects, keys: word, messageId
 
   // changed by correctWord to random value and used by useEffect in correction dropdown to trigger calling for audioUrls
   const [correctionTracker, setCorrectionTracker] = React.useState("");
@@ -77,9 +68,9 @@ export default function Messenger(props) {
   // ------------------------------------- MESSENGER ACTUAL ----------------------------------------
 
   React.useEffect(() => {
+    // updates messenger content whenever new message is added
     onSnapshot(q, (snapshot) => {
       const allMessages = snapshot.docs.map((doc) => {
-        console.log("SNAPPY1", doc.data());
         return {
           ...doc.data(),
           id: doc.id,
@@ -89,38 +80,17 @@ export default function Messenger(props) {
       setMessages(allMessages);
     });
 
-    // THIS DOESN'T WORK DESPITE CODE ABOVE WORKING... CODE BELOW WORKS
-    // onSnapshot(qSelectedWords, (snapshot) => {
-    //   const allSelectedWords = snapshot.docs.map((doc) => {
-    //     console.log("DOCDATA", doc.data());
-    //     return doc.data();
-    //   });
-    //   setSelectedWords2(allSelectedWords);
-    // });
-
     // updates selected words automatically on change in array at firebase level
+    // using same format as above not working for some reason, but this does:
     const wordsSnap = onSnapshot(
       doc(db, "selectedWords", "wordsArr"),
       (doc) => {
-        console.log("CurrentData2", doc.data());
         setSelectedWords(doc.data().words);
       }
     );
   }, []);
 
-  // React.useEffect(() => {
-  //   onSnapshot(qSelectedWords, (snapshot) => {
-  //     const allSelectedWords = snapshot.docs.map((doc) => {
-  //       console.log("DOCDATA", doc.data());
-  //       return doc.data();
-  //     });
-  //     setSelectedWords2(allSelectedWords);
-  //   });
-  // }, []);
-
-  console.log("SELECTEDWORDS2", selectedWords2);
-
-  // uses message state
+  // uploads message as object to firebase messages collection
   async function createMessage() {
     await addDoc(messagesCollectionRef, {
       createdAt: serverTimestamp(),
@@ -130,18 +100,20 @@ export default function Messenger(props) {
     });
   }
 
-  // message to send set to value of input
+  // message to send, set to value of input
   function handleMessageChange(e) {
     setMessage(e.target.value);
   }
 
   // --------------------------------- CORRECTING MESSAGE ----------------------------------
 
-  // gets edited message object from input and sets messageToEdit state
+  // sets the text for message to edit in message tab, used in Message.js
+  // messageToEdit is passed into CorrectMessage.js and renders under 'original message'
   function getMessageToEdit(messageObj) {
     setMessageToEdit(messageObj);
   }
 
+  // sets correction to the value of the correction textarea field in CorrectMessage.js
   function handleCorrectionChange(e) {
     setCorrection(e.target.value);
   }
@@ -153,50 +125,26 @@ export default function Messenger(props) {
     setDoc(ref, { correction }, { merge: true });
   }
 
-  // --------------------------------- EXPLAINING WORD -------------------------------------
-
-  // ARRAY - USED FOR SETTING TABS FOR EACH WORD AND ID IS USED BY CORRECTMESSAGE
-  // TO FIND MESSAGE ASSOCIATED WITH WORD... CALLED IN MESSAGE.JS
-  // function getSelectedWords(word, messageId) {
-  //   setSelectedWords((prevSelectedWords) => [
-  //     ...prevSelectedWords,
-  //     { word, messageId },
-  //   ]);
-  //   // setSelectedWord(word);
-  // }
-
-  // -------------------------------------------------------------------------------------
+  // -----------------------------TAB CONTROL ---------------------------------------
 
   const [selectedTab, setSelectedTab] = React.useState("");
 
+  // sets value of selected tab when clicking on tab
   function getSelectedTab(e) {
     setSelectedTab(e.target.text);
   }
 
+  // removes whatever is passed in from the selected words array in Firebase
+  // onSnapshot for this updates state selectedWords and tabs will be updated automatically
   async function removeSelectedWordFB(wordObj) {
     const selectedWordsRef = doc(db, "selectedWords", "wordsArr");
-
     await updateDoc(selectedWordsRef, { words: arrayRemove(wordObj) });
-    console.log("THING TO REMOVE", wordObj);
   }
-
-  // SHOULDD NOW HAPPEN AUTOMATICALLY ------------------------------
-  // // removes word from list of selected words which shows tabs
-  // function removeTab(word) {
-  //   // returns index where word is equal to wordObj.word of selectedWords
-  //   const index = selectedWords.findIndex((wordObj) => {
-  //     return wordObj.word === word;
-  //   });
-  //   // sets selectedWords as new filtered array, excluding the index of word passed in to func
-  //   setSelectedWords((prevSelectedWords) =>
-  //     prevSelectedWords.filter((wordObj, i) => i !== index)
-  //   );
-  // }
 
   const navigate = useNavigate();
 
-  // finds the word before the one in the current tab from arr of selected words
-  // navigates to that word
+  // finds the word after (or before) the one in the current tab from arr of selected words
+  // navigates to that word. Used when closing out tab to nav to next automatically
   function tabReset(word) {
     const index = selectedWords.findIndex((wordObj) => {
       return wordObj.word === word;
@@ -229,7 +177,6 @@ export default function Messenger(props) {
         <p
           onClick={() => {
             removeSelectedWordFB(wordObj);
-            // removeTab(wordObj.word);
             tabReset(wordObj.word);
           }}
         >
@@ -239,30 +186,7 @@ export default function Messenger(props) {
     );
   });
 
-  // const allSelectedWords = selectedWords2.map((word) => {
-  //   return (
-  //     <div
-  //       className={`${
-  //         word === selectedTab ? "bg-sky-700" : "bg-sky-400"
-  //       } hover:bg-sky-900 text-white py-1 px-2 rounded-t-md flex gap-1`}
-  //     >
-  //       <Link to={`console/correctWord/${word}`} onClick={getSelectedTab}>
-  //         {word}
-  //       </Link>
-  //       <p
-  //         onClick={() => {
-  //           removeTab(word);
-  //           tabReset(word);
-  //           removeSelectedWordFB(word);
-  //         }}
-  //       >
-  //         x
-  //       </p>
-  //     </div>
-  //   );
-  // });
-
-  // tab for editing full message
+  // tab for editing full message - always present
   const messageTab = messageToEdit && (
     <Link
       to={`console/correctMessage`}
@@ -275,14 +199,17 @@ export default function Messenger(props) {
     </Link>
   );
 
+  // array used for actually displaying tabs
   const allTabs = [messageTab, ...allSelectedWords];
 
+  // ----------------------------------------- MESSAGES AND DISPLAY --------------------------------------
+
+  // displayed in body
   const allMessages = messages.map((message) => {
     return (
       <Message
         getMessageToEdit={getMessageToEdit}
         message={message}
-        // getSelectedWords={getSelectedWords}
         correctionTracker={correctionTracker}
       />
     );
@@ -348,7 +275,6 @@ export default function Messenger(props) {
                   <CorrectWord
                     selectedWord={word}
                     messages={messages}
-                    // removeTab={removeTab}
                     tabReset={tabReset}
                     removeSelectedWordFB={removeSelectedWordFB}
                     setCorrectionTracker={setCorrectionTracker}
