@@ -12,6 +12,8 @@ import {
   deleteDoc,
   doc,
   setDoc,
+  updateDoc,
+  arrayRemove,
 } from "firebase/firestore";
 import { db, auth } from "./firebase-config";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
@@ -29,16 +31,12 @@ export default function Messenger(props) {
   const messagesCollectionRef = collection(db, "messages");
   const q = query(messagesCollectionRef, orderBy("createdAt", "asc"));
 
+  // NOT USING THIS?????
   const selectedWordsCollectionRef = collection(db, "selectedWords");
   const qSelectedWords = query(
     selectedWordsCollectionRef,
     orderBy("createdAt", "asc")
   );
-
-  console.log("THIS IS DB", db);
-  console.log("SELECTED REF", selectedWordsCollectionRef);
-  console.log("qSelectedWords", qSelectedWords);
-  console.log("q", q);
 
   const [messages, setMessages] = React.useState([]); // array of message objects from firebase
   const [message, setMessage] = React.useState(""); // value of messaging input
@@ -175,6 +173,11 @@ export default function Messenger(props) {
     setSelectedTab(e.target.text);
   }
 
+  async function removeSelectedWordFB(word) {
+    const selectedWordsRef = doc(db, "selectedWords", "wordsArr");
+    await updateDoc(selectedWordsRef, { words: arrayRemove(word) });
+  }
+
   // removes word from list of selected words which shows tabs
   function removeTab(word) {
     // returns index where word is equal to wordObj.word of selectedWords
@@ -224,6 +227,7 @@ export default function Messenger(props) {
           onClick={() => {
             removeTab(wordObj.word);
             tabReset(wordObj.word);
+            removeSelectedWordFB(wordObj.word);
           }}
         >
           x
@@ -231,6 +235,29 @@ export default function Messenger(props) {
       </div>
     );
   });
+
+  // const allSelectedWords = selectedWords2.map((word) => {
+  //   return (
+  //     <div
+  //       className={`${
+  //         word === selectedTab ? "bg-sky-700" : "bg-sky-400"
+  //       } hover:bg-sky-900 text-white py-1 px-2 rounded-t-md flex gap-1`}
+  //     >
+  //       <Link to={`console/correctWord/${word}`} onClick={getSelectedTab}>
+  //         {word}
+  //       </Link>
+  //       <p
+  //         onClick={() => {
+  //           removeTab(word);
+  //           tabReset(word);
+  //           removeSelectedWordFB(word);
+  //         }}
+  //       >
+  //         x
+  //       </p>
+  //     </div>
+  //   );
+  // });
 
   // tab for editing full message
   const messageTab = messageToEdit && (
@@ -320,6 +347,7 @@ export default function Messenger(props) {
                     messages={messages}
                     removeTab={removeTab}
                     tabReset={tabReset}
+                    removeSelectedWordFB={removeSelectedWordFB}
                     setCorrectionTracker={setCorrectionTracker}
                   />
                 }

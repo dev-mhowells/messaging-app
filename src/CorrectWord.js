@@ -256,6 +256,7 @@ export default function (props) {
           // controls tab redirects
           props.removeTab(props.selectedWord.word);
           props.tabReset(props.selectedWord.word);
+          props.removeSelectedWordFB(props.selectedWord.word);
           clearInputs();
         }}
       >
