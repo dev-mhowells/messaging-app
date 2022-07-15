@@ -2,6 +2,7 @@ import React from "react";
 import Messenger from "./Messenger.js";
 import Login from "./Login.js";
 import CorrectWord from "./CorrectMessage.js";
+import MessengerStudent from "./MessengerStudent.js";
 
 import {
   BrowserRouter as Router,
@@ -120,7 +121,13 @@ export default function App() {
         <Route
           exact
           path="/messenger/*"
-          element={<Messenger logout={logout} user={user} />}
+          element={
+            user.email === "email@email.com" ? (
+              <Messenger logout={logout} user={user} />
+            ) : (
+              <MessengerStudent logout={logout} user={user} />
+            )
+          }
         />
       </Route>
     </Routes>

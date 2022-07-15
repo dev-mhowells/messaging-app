@@ -1,7 +1,7 @@
 import React from "react";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "./firebase-config";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import sampleSound from "./media/birds.mp3";
 import { useReactMediaRecorder } from "react-media-recorder";
@@ -11,6 +11,8 @@ export default function (props) {
   const [synonyms, setSynonyms] = React.useState("");
   const [extra, setExtra] = React.useState("");
 
+  const [audioUrl, setAudioUrl] = React.useState("");
+
   const [currentWordObj, setCurrentWordObj] = React.useState({});
 
   // ------------------------ WORKING IN THIS SECTION, NEARLY THERE, YOU CAN DO IT!!! -----------------------
@@ -19,6 +21,8 @@ export default function (props) {
   const docRef = doc(db, "messages", props.selectedWord.messageId);
 
   // finds the current word object associated with word of this tab in FB array of words for this message
+  // updates textareaa feilds automatically if already corrected
+  // updates on change of selected tab
   React.useEffect(() => {
     console.log("working");
     async function getCurrentWordObj() {
@@ -33,12 +37,24 @@ export default function (props) {
             setSynonyms(wordObj.synonyms);
             setExamples(wordObj.examples);
             setExtra(wordObj.extra);
+
+            // audio
+            if (wordObj.forAudioRef) {
+              getDownloadURL(ref(storage, `${wordObj.forAudioRef}`)).then(
+                (url) => {
+                  console.log("URL", url);
+                  setAudioUrl(url);
+                }
+              );
+            }
           }
         }
       }
     }
     getCurrentWordObj();
   }, [props.selectedTab]);
+
+  console.log("AUDIO URL", audioUrl);
 
   // returns current array of word objects in FB for the message
   async function getWordArray() {
@@ -138,12 +154,24 @@ export default function (props) {
     onStart: () => {
       // reset control display with no audio - only useful if using AudioBlob state in console display!
       // props.setAudioBlob("");
+      setAudioUrl("");
     },
     onStop: (blobUrl, blob) => {
       console.log("onstop happened", console.log(mediaBlobUrl));
+      // setAudioUrl(mediaBlobUrl);
       uploadAudio(blob);
     },
   });
+
+  React.useEffect(() => {
+    function clearBlob() {
+      console.log(clearBlobUrl);
+      URL.revokeObjectURL(mediaBlobUrl);
+    }
+    clearBlob();
+    // mediaBlobUrl = "";
+    console.log("CLEARED MEDIABLOB", mediaBlobUrl);
+  }, [props.selectedTab]);
 
   // --------------------------------------AUDIO NOT RELEVANT YET -------------------------------------------------
 
@@ -178,7 +206,12 @@ export default function (props) {
         >
           Stop Recording
         </button>
-        <audio src={mediaBlobUrl} controls autoPlay loop />
+        <audio
+          src={audioUrl ? audioUrl : mediaBlobUrl}
+          controls
+          autoPlay
+          loop
+        />
       </div>
     );
   }
