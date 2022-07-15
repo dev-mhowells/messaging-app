@@ -145,6 +145,9 @@ export default function Messenger(props) {
 
   // finds the word after (or before) the one in the current tab from arr of selected words
   // navigates to that word. Used when closing out tab to nav to next automatically
+
+  // BUG **** - WHILE ONE TAB IS SELECTED, IF CLOSE ANOTHER TAB, SELECTED TAB WILL CHANGE TO
+  // ADJASCENT TAB TO THE ONE THAT IS CLOSED INSTEAD OF STAYING WITH THE SELECTED TAB -- FIX
   function tabReset(word) {
     const index = selectedWords.findIndex((wordObj) => {
       return wordObj.word === word;

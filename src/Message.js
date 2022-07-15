@@ -1,10 +1,8 @@
 import React from "react";
 import { auth } from "./firebase-config";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc, arrayUnion, updateDoc } from "firebase/firestore";
 import { db } from "./firebase-config";
 
-import sampleSound from "./media/birds.mp3";
 import CorrectionDropdown from "./CorrectionDropdown";
 
 export default function Message(props) {
@@ -37,87 +35,12 @@ export default function Message(props) {
     <button
       className="bg-sky-50 py-1 px-2 ml-2 rounded-md text-sm mr-2 mt-2 mb-2 hover:bg-sky-300"
       onClick={() => {
-        // props.getSelectedWords(word, props.message.id);
         updateSelectedWordsFB({ word, messageId: props.message.id });
       }}
     >
       {word}
     </button>
   ));
-
-  // ---------------------------------- FIREBASE AUDIO ---------------------------------------------
-
-  const [wordBlob, setWordBlob] = React.useState();
-  const [wordBlobs, setWordBlobs] = React.useState([]);
-
-  // console.log("WORDBLOB", wordBlob);
-
-  // Get a reference to the storage service, which is used to create references in your storage bucket
-  const storage = getStorage();
-
-  // Create a storage reference from our storage service
-  const storageRef = ref(storage);
-
-  // Create a child reference as messageId
-  // loop through words in message, if match in audioRef, display audio, if no, don't =-- THIS NEXT
-  const audioRef = ref(storage, `${props.message.id}/too`);
-  const audioRef1 = ref(storage, `${props.message.id}/hello`);
-
-  const audioRefs = [audioRef, audioRef1];
-
-  // ------------------ AUDIO STUFF - COME BACK LATER ---------------------------------------------------------------
-
-  // THIS WORKS FOR GETTING ONE SPECIFIC BIT OF AUDIO --- HOW TO SCALE ???
-
-  const [oneRef, setOneRef] = React.useState("");
-
-  function oneMoreTry() {
-    if (props.message.id === "kZmRnRq8lwEQg9mRxABP") {
-      getDownloadURL(ref(storage, `${props.message.id}/d`)).then((url) => {
-        setOneRef(url);
-      });
-      return <audio src={oneRef} controls loop />;
-    }
-  }
-
-  // ABOVE WORKS ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-  function getAllUrls() {
-    for (let wordObj of props.message.words) {
-      if (wordObj.forAudioRef) {
-        getDownloadURL(ref(storage, `${wordObj.forAudioRef}`)).then((url) => {
-          console.log("URL", url);
-        });
-      }
-    }
-  }
-
-  function getAllUrls2() {
-    let allUrls = [];
-    for (let wordObj of props.message.words) {
-      if (wordObj.forAudioRef) {
-        getDownloadURL(ref(storage, `${wordObj.forAudioRef}`)).then((url) => {
-          allUrls.push(url);
-        });
-      }
-    }
-    return allUrls;
-  }
-  // returns empty array b/c async?
-
-  const [allUrls, setAllUrls] = React.useState([]);
-
-  function getAllUrls3() {
-    for (let wordObj of props.message.words) {
-      if (wordObj.forAudioRef) {
-        getDownloadURL(ref(storage, `${wordObj.forAudioRef}`)).then((url) => {
-          setAllUrls((prevArr) => [...prevArr, url]);
-        });
-      }
-    }
-  }
-
-  // produces infinite loop when called
 
   // --------------------------------------------------------------------------------------------------
 
@@ -136,7 +59,6 @@ export default function Message(props) {
         onClick={() => {
           toggler(isSelected);
           props.getMessageToEdit(props.message);
-          // getBlobs();
         }}
       >
         {!props.message.selected ? (
@@ -149,20 +71,6 @@ export default function Message(props) {
         <p className="p-2">{props.message.correction}</p>
       )}
       {props.message.words &&
-        // props.message.words.map((wordObj) => (
-        //   <div className="p-2 flex flex-col gap-1">
-        //     <p>
-        //       {`${wordObj.word}`} <button onClick={toggleDropDown}>drop</button>
-        //     </p>
-        //     {dropDown && (
-        //       <div>
-        //         <p> {`synonyms: ${wordObj.synonyms}`}</p>
-        //         <p> {`examples: ${wordObj.examples}`}</p>
-        //         <p> {`more: ${wordObj.extra}`}</p>
-        //       </div>
-        //     )}
-        //   </div>
-        // ))
         props.message.words.map((wordObj) => (
           <CorrectionDropdown
             wordObj={wordObj}
@@ -170,9 +78,6 @@ export default function Message(props) {
             correctionTracker={props.correctionTracker}
           />
         ))}
-
-      {oneMoreTry()}
-      {/* {getAllUrls2()} */}
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import React from "react";
-import Text from "./Text.js";
 import Messenger from "./Messenger.js";
 import Login from "./Login.js";
 import CorrectWord from "./CorrectMessage.js";

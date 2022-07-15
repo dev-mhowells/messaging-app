@@ -25,7 +25,6 @@ export default function CorrectionDropdown(props) {
           }
         );
       }
-      console.log("TRACKER", props.correctionTracker);
     }
     getAudio();
   }, [props.correctionTracker]);

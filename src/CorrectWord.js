@@ -1,49 +1,15 @@
 import React from "react";
-import { arrayUnion, doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "./firebase-config";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 import sampleSound from "./media/birds.mp3";
 import { useReactMediaRecorder } from "react-media-recorder";
 
 export default function (props) {
-  const [allCorrectedWordObj, setAllCorrectedWordObj] = React.useState([]);
   const [examples, setExamples] = React.useState("");
   const [synonyms, setSynonyms] = React.useState("");
   const [extra, setExtra] = React.useState("");
-
-  // this works but I still need to get the data from FB so..
-  function checkIfWordCorrected() {
-    for (let messageObj of props.messages) {
-      if (messageObj.words) {
-        for (let wordObj of messageObj.words) {
-          console.log("WORD IN ARR", wordObj);
-          if (wordExplained.word === wordObj.word) {
-            console.log("DOUBLE FOUND");
-            // REPLACE
-          } else {
-            console.log("NOT DOUBLE");
-            // ADD
-          }
-        }
-      }
-    }
-  }
-
-  // React.useEffect(() => {
-  //   async function getWordArray() {
-  //     const docRef = doc(db, "messages", props.selectedWord.messageId);
-  //     const docSnap = await getDoc(docRef);
-
-  //     if (docSnap.exists()) {
-  //       const correctedWordObjs = docSnap.data().words;
-  //       console.log("corrected words", correctedWordObjs);
-  //       setAllCorrectedWordObj(correctedWordObjs);
-  //     }
-  //   }
-
-  //   getWordArray();
-  // }, []);
 
   // ------------------------ WORKING IN THIS SECTION, NEARLY THERE, YOU CAN DO IT!!! -----------------------
 
@@ -103,15 +69,6 @@ export default function (props) {
     setDoc(docRef, { words: newArr }, { merge: true });
   }
 
-  // async function addExplainedWord() {
-  //   // CHECK IF WORD EXISTS:
-
-  //   // const ref = doc(db, "messages", props.selectedWord.messageId);
-  //   await updateDoc(docRef, {
-  //     words: arrayUnion(wordExplained),
-  //   });
-  // }
-
   // for onchange for definition feild, captures input and sets to definition state
   function handleExamples(e) {
     setExamples(e.target.value);
@@ -159,7 +116,6 @@ export default function (props) {
     },
     onStop: (blobUrl, blob) => {
       console.log("onstop happened", console.log(mediaBlobUrl));
-      // getBlob();
       uploadAudio(blob);
     },
   });
@@ -250,8 +206,6 @@ export default function (props) {
         className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4 border-none rounded-md w-1/3 self-end mb-4"
         onClick={() => {
           updateTracker();
-          // addExplainedWord();
-          // getWordArray();
           updateWordObjArr();
           // controls tab redirects
           props.removeTab(props.selectedWord.word);

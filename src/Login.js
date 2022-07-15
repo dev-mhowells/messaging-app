@@ -1,56 +1,6 @@
 import React from "react";
-// import {
-//   createUserWithEmailAndPassword,
-//   onAuthStateChanged,
-//   signOut,
-//   signInWithEmailAndPassword,
-// } from "firebase/auth";
-// import { auth } from "./firebase-config";
 
 export default function Login(props) {
-  //   const [regEmail, setRegEmail] = React.useState("");
-  //   const [regPass, setRegPass] = React.useState("");
-  //   const [loginEmail, setLoginEmail] = React.useState("");
-  //   const [loginPass, setLoginPass] = React.useState("");
-  //   const [user, setUser] = React.useState({});
-
-  //   console.log(user);
-
-  //   React.useEffect(() => {
-  //     onAuthStateChanged(auth, (currentUser) => {
-  //       setUser(currentUser);
-  //     });
-  //   }, []);
-
-  //   async function register() {
-  //     try {
-  //       const newUser = await createUserWithEmailAndPassword(
-  //         auth,
-  //         regEmail,
-  //         regPass
-  //       );
-  //       console.log(newUser);
-  //     } catch (error) {
-  //       console.log(error.message);
-  //     }
-  //   }
-
-  //   async function login() {
-  //     try {
-  //       const newUser = await signInWithEmailAndPassword(
-  //         auth,
-  //         loginEmail,
-  //         loginPass
-  //       );
-  //       console.log(newUser);
-  //     } catch (error) {
-  //       console.log(error.message);
-  //     }
-  //   }
-
-  //   async function logout() {
-  //     await signOut(auth);
-  //   }
 
   return (
     <div className="flex flex-col gap-3 font-poppins">
