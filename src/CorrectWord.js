@@ -11,9 +11,34 @@ export default function (props) {
   const [synonyms, setSynonyms] = React.useState("");
   const [extra, setExtra] = React.useState("");
 
+  const [currentWordObj, setCurrentWordObj] = React.useState({});
+
   // ------------------------ WORKING IN THIS SECTION, NEARLY THERE, YOU CAN DO IT!!! -----------------------
 
+  // regerence to the current message
   const docRef = doc(db, "messages", props.selectedWord.messageId);
+
+  // finds the current word object associated with word of this tab in FB array of words for this message
+  React.useEffect(() => {
+    console.log("working");
+    async function getCurrentWordObj() {
+      const docSnap = await getDoc(docRef);
+      // reference to words array of message
+      if (docSnap.exists()) {
+        const correctedWordObjs = docSnap.data().words;
+        // for each wordObj in array, if the current word matches wordObj.word
+        for (let wordObj of correctedWordObjs) {
+          if (wordObj.word === props.selectedTab) {
+            setCurrentWordObj(wordObj);
+            setSynonyms(wordObj.synonyms);
+            setExamples(wordObj.examples);
+            setExtra(wordObj.extra);
+          }
+        }
+      }
+    }
+    getCurrentWordObj();
+  }, [props.selectedTab]);
 
   // returns current array of word objects in FB for the message
   async function getWordArray() {

@@ -36,10 +36,14 @@ export default function CorrectionDropdown(props) {
       </p>
       {dropDown && (
         <div>
-          <p> {`synonyms: ${props.wordObj.synonyms}`}</p>
-          <p> {`examples: ${props.wordObj.examples}`}</p>
-          <p> {`more: ${props.wordObj.extra}`}</p>
-          <audio src={audioUrl} controls loop />
+          {props.wordObj.synonyms && (
+            <p> {`synonyms: ${props.wordObj.synonyms}`}</p>
+          )}
+          {props.wordObj.examples && (
+            <p> {`examples: ${props.wordObj.examples}`}</p>
+          )}
+          {props.wordObj.extra && <p> {`more: ${props.wordObj.extra}`}</p>}
+          {audioUrl && <audio src={audioUrl} controls loop />}
         </div>
       )}
     </div>

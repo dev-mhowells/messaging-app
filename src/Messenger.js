@@ -276,6 +276,7 @@ export default function Messenger(props) {
                 path={`correctWord/${word.word}`}
                 element={
                   <CorrectWord
+                    selectedTab={selectedTab}
                     selectedWord={word}
                     messages={messages}
                     tabReset={tabReset}
