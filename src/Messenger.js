@@ -67,6 +67,14 @@ export default function Messenger(props) {
   // translateText();
   // ------------------------------------- MESSENGER ACTUAL ----------------------------------------
 
+  // ref to bottom of messenger
+  const messagesBottom = React.useRef();
+
+  // scrolls to the bottom of messenger when there is a new message
+  React.useEffect(() => {
+    messagesBottom.current.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   React.useEffect(() => {
     // updates messenger content whenever new message is added
     onSnapshot(q, (snapshot) => {
@@ -139,6 +147,7 @@ export default function Messenger(props) {
   async function removeSelectedWordFB(wordObj) {
     const selectedWordsRef = doc(db, "selectedWords", "wordsArr");
     await updateDoc(selectedWordsRef, { words: arrayRemove(wordObj) });
+    console.log("OBJECT TO BE REMOVED", wordObj);
   }
 
   const navigate = useNavigate();
@@ -251,6 +260,7 @@ export default function Messenger(props) {
         <section className=" h-full ml-10 w-1/2 flex flex-col justify-end gap-5 border-t-2 border-sky-700">
           <div className="p-3 flex flex-col gap-5 w-full overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-sky-700">
             {allMessages}
+            <div ref={messagesBottom}></div>
           </div>
           <textarea
             className="h-10 w-full focus:outline-none border-sky-700 focus:border-sky-300 p-2 border-2 rounded-md overflow-hidden resize-none"

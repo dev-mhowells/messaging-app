@@ -236,6 +236,8 @@ export default function (props) {
     console.log("CHECK");
   }
 
+  console.log("PROPS", props.selectedWord);
+
   return (
     <section className=" w-2/5 flex flex-col gap-4 border-t-2 border-sky-700 text-xs">
       <p className="mt-4">Synonyms</p>
@@ -266,9 +268,9 @@ export default function (props) {
           updateTracker();
           updateWordObjArr();
           // controls tab redirects
-          props.removeTab(props.selectedWord.word);
+          // props.removeTab(props.selectedWord.word);
+          props.removeSelectedWordFB(props.selectedWord);
           props.tabReset(props.selectedWord.word);
-          props.removeSelectedWordFB(props.word);
           clearInputs();
         }}
       >
