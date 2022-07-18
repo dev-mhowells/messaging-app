@@ -165,23 +165,30 @@ export default function Messenger(props) {
   // BECAUSE WHEN THERE ARE NO WORDS, THERE ACTUALLY CANNOT HAVE BEEN A PARAMETER PASSED IN..
   // WORD PARAMETER IS THERFORE UNDEFINED..
   function tabReset(word) {
-    const index = selectedWords.findIndex((wordObj) => {
-      return wordObj.word === word;
-    });
-    // controls direction in which new tab is selected upon tab close
-    const newTab =
-      index < selectedWords.length - 1
-        ? selectedWords[index + 1].word
-        : selectedWords[index - 1].word;
-    // changes tab colour
-    setSelectedTab(newTab);
-    // redirects
-    // console.log("SELECTED WORDS LENGth", selectedWords.length);
-
-    navigate(`console/correctWord/${newTab}`);
-
-    // navigate("console/correctMessage");
+    // only change tab if the tab closed is the currently selected tab
+    if (word === selectedTab) {
+      // find index
+      const index = selectedWords.findIndex((wordObj) => {
+        return wordObj.word === word;
+      });
+      // controls direction in which new tab is selected upon tab close
+      // if there is at least 2 tabs
+      if (selectedWords.length > 1) {
+        const newTab =
+          index < selectedWords.length - 1
+            ? selectedWords[index + 1].word
+            : selectedWords[index - 1].word;
+        // changes tab colour
+        setSelectedTab(newTab);
+        // redirects
+        navigate(`console/correctWord/${newTab}`);
+      } else {
+        // if only one tab left
+        navigate("console/correctMessage");
+      }
+    }
   }
+  // }
 
   // creates all word tabs
   const allSelectedWords = selectedWords.map((wordObj) => {

@@ -31,16 +31,27 @@ export default function Message(props) {
     await updateDoc(selectedWordsRef, { words: arrayUnion(word) });
   }
 
-  const eachWord = splitIntoWords.map((word) => (
-    <button
-      className="bg-sky-50 py-1 px-2 ml-2 rounded-md text-sm mr-2 mt-2 mb-2 hover:bg-sky-300"
-      onClick={() => {
-        updateSelectedWordsFB({ word, messageId: props.message.id });
-      }}
-    >
-      {word}
-    </button>
-  ));
+  function removeWordFormatting(word) {
+    let onlyLetters = word.replace(/[^0-9a-z]/gi, "");
+    // onlyLetters.replace(/[']s/gi, "");
+    return onlyLetters.toLowerCase();
+  }
+
+  console.log("FORMAT TEST", removeWordFormatting("Brother's"));
+
+  const eachWord = splitIntoWords.map((word) => {
+    // console.log("DEFORMATTED", removeWordFormatting(word));
+    return (
+      <button
+        className="bg-sky-50 py-1 px-2 ml-2 rounded-md text-sm mr-2 mt-2 mb-2 hover:bg-sky-300"
+        onClick={() => {
+          updateSelectedWordsFB({ word, messageId: props.message.id });
+        }}
+      >
+        {word}
+      </button>
+    );
+  });
 
   // --------------------------------------------------------------------------------------------------
 
