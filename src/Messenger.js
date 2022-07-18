@@ -99,7 +99,8 @@ export default function Messenger(props) {
   }, []);
 
   // uploads message as object to firebase messages collection
-  async function createMessage() {
+  async function createMessage(e) {
+    e.preventDefault();
     await addDoc(messagesCollectionRef, {
       createdAt: serverTimestamp(),
       message: message,
@@ -110,6 +111,7 @@ export default function Messenger(props) {
 
   // message to send, set to value of input
   function handleMessageChange(e) {
+    console.log(e);
     setMessage(e.target.value);
   }
 
@@ -156,14 +158,9 @@ export default function Messenger(props) {
     navigate("console/correctMessage");
   }, []);
 
+  // controls redirects on tab closure
   // finds the word after (or before) the one in the current tab from arr of selected words
   // navigates to that word. Used when closing out tab to nav to next automatically
-
-  // BUG **** - WHILE ONE TAB IS SELECTED, IF CLOSE ANOTHER TAB, SELECTED TAB WILL CHANGE TO
-  // ADJASCENT TAB TO THE ONE THAT IS CLOSED INSTEAD OF STAYING WITH THE SELECTED TAB -- FIX
-  // ALSO NEED TO REDIRECT TO CONSOLE/CORRECTMESSAGE IF NO WORDS IN ARRAY - BUG PRESENTLY
-  // BECAUSE WHEN THERE ARE NO WORDS, THERE ACTUALLY CANNOT HAVE BEEN A PARAMETER PASSED IN..
-  // WORD PARAMETER IS THERFORE UNDEFINED..
   function tabReset(word) {
     // only change tab if the tab closed is the currently selected tab
     if (word === selectedTab) {
@@ -188,7 +185,6 @@ export default function Messenger(props) {
       }
     }
   }
-  // }
 
   // creates all word tabs
   const allSelectedWords = selectedWords.map((wordObj) => {
@@ -269,20 +265,26 @@ export default function Messenger(props) {
             {allMessages}
             <div ref={messagesBottom}></div>
           </div>
-          <textarea
-            className="h-10 w-full focus:outline-none border-sky-700 focus:border-sky-300 p-2 border-2 rounded-md overflow-hidden resize-none"
-            value={message}
-            onChange={handleMessageChange}
-          ></textarea>
-          <div className="flex w-full justify-between">
-            <h2 className="py-2 px-4 bg-sky-100 h-10">30:00</h2>
-            <button
-              className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4 h-10 w-1/3 self-end rounded-md mb-4"
-              onClick={() => createMessage()}
-            >
-              send
-            </button>
-          </div>
+          <form onSubmit={createMessage}>
+            <textarea
+              className="h-10 w-full focus:outline-none border-sky-700 focus:border-sky-300 p-2 border-2 rounded-md overflow-hidden resize-none"
+              value={message}
+              onChange={handleMessageChange}
+            ></textarea>
+            <div className="flex w-full justify-between">
+              <h2 className="py-2 px-4 bg-sky-100 h-10">30:00</h2>
+              <button
+                className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4 h-10 w-1/3 self-end rounded-md mb-4"
+                // onClick={() => {
+                //   createMessage();
+                //   setMessage("");
+                // }}
+                type="submit"
+              >
+                send
+              </button>
+            </div>
+          </form>
         </section>
         <Routes>
           <Route exact path="console">

@@ -31,13 +31,12 @@ export default function Message(props) {
     await updateDoc(selectedWordsRef, { words: arrayUnion(word) });
   }
 
+  // REFINE THIS FUNCTION SO THAT REPLACES 'S WITH EMPTY STRING
   function removeWordFormatting(word) {
     let onlyLetters = word.replace(/[^0-9a-z]/gi, "");
     // onlyLetters.replace(/[']s/gi, "");
     return onlyLetters.toLowerCase();
   }
-
-  console.log("FORMAT TEST", removeWordFormatting("Brother's"));
 
   const eachWord = splitIntoWords.map((word) => {
     // console.log("DEFORMATTED", removeWordFormatting(word));
@@ -45,7 +44,10 @@ export default function Message(props) {
       <button
         className="bg-sky-50 py-1 px-2 ml-2 rounded-md text-sm mr-2 mt-2 mb-2 hover:bg-sky-300"
         onClick={() => {
-          updateSelectedWordsFB({ word, messageId: props.message.id });
+          updateSelectedWordsFB({
+            word: removeWordFormatting(word),
+            messageId: props.message.id,
+          });
         }}
       >
         {word}
@@ -57,7 +59,7 @@ export default function Message(props) {
 
   return (
     <div
-      className={`flex flex-col bg-sky-100 max-w-[80%] rounded-md hover:cursor-pointer ${
+      className={`flex flex-col max-w-[80%] bg-green-200 border-none rounded-t-md rounded-b-md ${
         props.message.uid !== auth.currentUser.uid ? "self-end" : "self-start"
       }`}
     >

@@ -5,3 +5,7 @@
 .scrollbar::-webkit-scrollbar-thumb {
   border-radius: 100vh;
 }
+
+audio::-webkit-media-controls-panel {
+  background-color: #f0fdf4;
+}

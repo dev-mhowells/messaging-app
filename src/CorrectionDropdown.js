@@ -1,4 +1,9 @@
 import React from "react";
+import triangle from "./images/triangle.png";
+import triangleXs from "./images/triangle-xs.png";
+import triangleXsUp from "./images/triangle-xs-up.png";
+import triangleSmall from "./images/triangle-small.png";
+import triangleSmallUp from "./images/triangle-small-up.png";
 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -30,20 +35,43 @@ export default function CorrectionDropdown(props) {
   }, [props.correctionTracker]);
 
   return (
-    <div className="p-2 flex flex-col gap-1">
-      <p>
-        {`${props.wordObj.word}`} <button onClick={toggleDropDown}>drop</button>
-      </p>
+    <div className=" flex flex-col gap-1 bg-green-200 text-sm border-none rounded-b-md">
+      <div className="flex justify-between ml-2 mr-2 rounded-md">
+        <p className="justify-self-center self-center">
+          {`${props.wordObj.word}`}
+        </p>
+        <img
+          src={dropDown ? triangleXsUp : triangleXs}
+          onClick={toggleDropDown}
+          className="self-center mt-2 mb-2 hover:cursor-pointer"
+        ></img>
+      </div>
       {dropDown && (
-        <div>
+        <div className="even:bg-green-50 w-full flex flex-col gap-1 border-none rounded-b-md">
           {props.wordObj.synonyms && (
-            <p> {`synonyms: ${props.wordObj.synonyms}`}</p>
+            <div className="border-b ml-2 mr-2">
+              <i>synonyms:</i>
+              <p>{`${props.wordObj.synonyms}`}</p>
+            </div>
           )}
           {props.wordObj.examples && (
-            <p> {`examples: ${props.wordObj.examples}`}</p>
+            <div className="border-b ml-2 mr-2">
+              <i>examples:</i>
+              <p> {`${props.wordObj.examples}`}</p>
+            </div>
           )}
-          {props.wordObj.extra && <p> {`more: ${props.wordObj.extra}`}</p>}
-          {audioUrl && <audio src={audioUrl} controls loop />}
+          {props.wordObj.extra && (
+            <div className="border-b ml-2 mr-2">
+              <i>notes:</i>
+              <p> {`${props.wordObj.extra}`}</p>
+            </div>
+          )}
+          {audioUrl && (
+            <div className=" ml-2 mr-2 ">
+              <i>pronunciation:</i>
+              <audio src={audioUrl} controls loop />
+            </div>
+          )}
         </div>
       )}
     </div>
