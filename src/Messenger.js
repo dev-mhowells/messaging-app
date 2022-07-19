@@ -1,4 +1,5 @@
 import React from "react";
+import crossSmall from "./images/cross-s.png";
 import Message from "./Message";
 import CorrectMessage from "./CorrectMessage";
 import CorrectWord from "./CorrectWord";
@@ -200,14 +201,14 @@ export default function Messenger(props) {
         >
           {wordObj.word}
         </Link>
-        <p
+        <img
           onClick={() => {
             removeSelectedWordFB(wordObj);
             tabReset(wordObj.word);
           }}
-        >
-          x
-        </p>
+          src={crossSmall}
+          className="self-center hover:cursor-pointer"
+        ></img>
       </div>
     );
   });
@@ -246,12 +247,12 @@ export default function Messenger(props) {
       <div className="flex gap-10 h-[10%]">
         <section className="flex justify-between w-1/2 mt-4 ml-10">
           <div className="flex gap-4">
-            <div className="rounded-full w-12 h-12 bg-sky-900 mb-4"></div>
-            <h2>Teacher</h2>
+            <div className="rounded-full h-[90%] aspect-square bg-sky-900 mb-4"></div>
+            <h2 className="mt-1">Teacher</h2>
           </div>
           <div className="flex gap-4">
-            <h2>Student</h2>
-            <div className="rounded-full w-12 h-12 bg-sky-900"></div>
+            <h2 className="self-end mb-2">Student</h2>
+            <div className="rounded-full h-[90%] aspect-square bg-sky-900"></div>
           </div>
           <button className="py-2 px-4 bg-sky-100" onClick={props.logout}>
             Log out

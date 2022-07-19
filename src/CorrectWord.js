@@ -2,6 +2,8 @@ import React from "react";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "./firebase-config";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import recordImg from "./images/record.png";
+import stopImg from "./images/stop.png";
 
 import sampleSound from "./media/birds.mp3";
 import { useReactMediaRecorder } from "react-media-recorder";
@@ -82,7 +84,6 @@ export default function (props) {
       }
       return false;
     });
-    console.log("UNIQUE", uniqueArr);
     return uniqueArr;
   }
 
@@ -190,28 +191,13 @@ export default function (props) {
   // mediaBlobUrl set as source because if use state as source, there is a delay
   function record() {
     return (
-      <div>
-        <p>{status}</p>
-        <button
-          className="bg-sky-400 border rounded-md p-1 text-white mr-2"
-          onClick={startRecording}
-        >
-          Start Recording
-        </button>
-        <button
-          className="bg-sky-400 border rounded-md p-1 text-white mr-2"
-          onClick={() => {
-            stopRecording();
-          }}
-        >
-          Stop Recording
-        </button>
-        <audio
-          src={audioUrl ? audioUrl : mediaBlobUrl}
-          controls
-          autoPlay
-          loop
-        />
+      <div className="flex gap-4 justify-center items-center">
+        <img
+          className="hover:cursor-pointer"
+          onClick={status === "recording" ? stopRecording : startRecording}
+          src={status !== "recording" ? recordImg : stopImg}
+        ></img>
+        <audio src={audioUrl ? audioUrl : mediaBlobUrl} controls />
       </div>
     );
   }
@@ -252,16 +238,15 @@ export default function (props) {
         onChange={handleExamples}
         value={examples}
       ></textarea>
+      <p>Pronunciation</p>
+      <div className="h-full w-300 p-2 ">{record()}</div>
       <p>Extra</p>
       <textarea
         className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none"
         onChange={handleExtra}
         value={extra}
       ></textarea>
-      <p>Pronunciation</p>
-      <div className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none">
-        {record()}
-      </div>
+
       <button
         className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4 border-none rounded-md w-1/3 self-end mb-4"
         onClick={() => {
