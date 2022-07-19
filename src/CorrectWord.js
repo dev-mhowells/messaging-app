@@ -16,6 +16,7 @@ export default function (props) {
   const [audioUrl, setAudioUrl] = React.useState("");
 
   const [currentWordObj, setCurrentWordObj] = React.useState({});
+  const [passAudioBlobUrl, setPassAudioBlobUrl] = React.useState(false);
 
   // ------------------------ WORKING IN THIS SECTION, NEARLY THERE, YOU CAN DO IT!!! -----------------------
 
@@ -26,7 +27,11 @@ export default function (props) {
   // updates textareaa feilds automatically if already corrected
   // updates on change of selected tab
   React.useEffect(() => {
-    console.log("working");
+    // determines whether to pass mediaBlobUrl from reactMediaRecorder, if false don't pass
+    // prevents audioBlobUrl and AudioUrl from persisting between tab changes, this resets
+    setPassAudioBlobUrl(false);
+    setAudioUrl("");
+
     async function getCurrentWordObj() {
       const docSnap = await getDoc(docRef);
       // reference to words array of message
@@ -35,6 +40,7 @@ export default function (props) {
         // for each wordObj in array, if the current word matches wordObj.word
         for (let wordObj of correctedWordObjs) {
           if (wordObj.word === props.selectedTab) {
+            console.log("WORDOBJ", wordObj);
             setCurrentWordObj(wordObj);
             setSynonyms(wordObj.synonyms);
             setExamples(wordObj.examples);
@@ -55,6 +61,8 @@ export default function (props) {
     }
     getCurrentWordObj();
   }, [props.selectedTab]);
+
+  console.log("PASS?", passAudioBlobUrl);
 
   console.log("AUDIO URL", audioUrl);
 
@@ -158,21 +166,27 @@ export default function (props) {
       setAudioUrl("");
     },
     onStop: (blobUrl, blob) => {
-      console.log("onstop happened", console.log(mediaBlobUrl));
+      // console.log("onstop happened", console.log(mediaBlobUrl));
       // setAudioUrl(mediaBlobUrl);
+      // once audio is recorded in a tab, it is immediately set to the audio inside the in-tab audioplayer
+      // this is a control which allows it to be passed, and is turned off on tab change to prevent
+      // thi saudio from persisting between tabs.
+      setPassAudioBlobUrl(true);
       uploadAudio(blob);
     },
   });
 
-  React.useEffect(() => {
-    function clearBlob() {
-      console.log(clearBlobUrl);
-      URL.revokeObjectURL(mediaBlobUrl);
-    }
-    clearBlob();
-    // mediaBlobUrl = "";
-    console.log("CLEARED MEDIABLOB", mediaBlobUrl);
-  }, [props.selectedTab]);
+  // React.useEffect(() => {
+  //   function clearBlob() {
+  //     console.log(clearBlobUrl);
+  //     URL.revokeObjectURL(mediaBlobUrl);
+  //   }
+  //   clearBlob();
+  //   // mediaBlobUrl = "";
+  //   console.log("CLEARED MEDIABLOB", mediaBlobUrl);
+  // }, [props.selectedTab]);
+
+  // when selected tab changes, first check if there is audioUrl, if not, set to blank
 
   // --------------------------------------AUDIO NOT RELEVANT YET -------------------------------------------------
 
@@ -197,7 +211,11 @@ export default function (props) {
           onClick={status === "recording" ? stopRecording : startRecording}
           src={status !== "recording" ? recordImg : stopImg}
         ></img>
-        <audio src={audioUrl ? audioUrl : mediaBlobUrl} controls />
+        {/* <audio src={audioUrl ? audioUrl : mediaBlobUrl} controls /> */}
+        <audio
+          src={mediaBlobUrl && passAudioBlobUrl ? mediaBlobUrl : audioUrl}
+          controls
+        />
       </div>
     );
   }
@@ -219,10 +237,7 @@ export default function (props) {
   // this value changes, then calls for audio - seems like a strange solution..
   function updateTracker() {
     props.setCorrectionTracker(Math.random() * 100);
-    console.log("CHECK");
   }
-
-  console.log("PROPS", props.selectedWord);
 
   return (
     <section className=" w-2/5 flex flex-col gap-4 border-t-2 border-sky-700 text-xs">
