@@ -42,6 +42,13 @@ export default function Messenger(props) {
   // changed by correctWord to random value and used by useEffect in correction dropdown to trigger calling for audioUrls
   const [correctionTracker, setCorrectionTracker] = React.useState("");
 
+  // moved from message.js
+  // const [isSelected, setIsSelected] = React.useState(false);
+
+  // function toggler() {
+  //   setIsSelected((prevIsSelected) => !prevIsSelected);
+  // }
+
   // --------------------------------------- TRANSLATE-------------------------------------------
 
   // // Imports the Google Cloud client library
@@ -83,7 +90,8 @@ export default function Messenger(props) {
         return {
           ...doc.data(),
           id: doc.id,
-          selected: false,
+          // this was previously changed in Message.js but seems redundant
+          // selected: false,
         };
       });
       setMessages(allMessages);
@@ -150,13 +158,13 @@ export default function Messenger(props) {
   async function removeSelectedWordFB(wordObj) {
     const selectedWordsRef = doc(db, "selectedWords", "wordsArr");
     await updateDoc(selectedWordsRef, { words: arrayRemove(wordObj) });
-    console.log("OBJECT TO BE REMOVED", wordObj);
   }
 
   const navigate = useNavigate();
 
   React.useEffect(() => {
     navigate("console/correctMessage");
+    setSelectedTab("Message");
   }, []);
 
   // controls redirects on tab closure
@@ -183,6 +191,7 @@ export default function Messenger(props) {
       } else {
         // if only one tab left
         navigate("console/correctMessage");
+        setSelectedTab("Message");
       }
     }
   }
@@ -238,6 +247,9 @@ export default function Messenger(props) {
         getMessageToEdit={getMessageToEdit}
         message={message}
         correctionTracker={correctionTracker}
+        // added
+        // toggler={toggler}
+        // isSelected={isSelected}
       />
     );
   });

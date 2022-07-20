@@ -18,7 +18,9 @@ export default function (props) {
   const [currentWordObj, setCurrentWordObj] = React.useState({});
   const [passAudioBlobUrl, setPassAudioBlobUrl] = React.useState(false);
 
-  // ------------------------ WORKING IN THIS SECTION, NEARLY THERE, YOU CAN DO IT!!! -----------------------
+  // ----------------------- -----------------------
+
+  // THIS COMPONENTS NEEDS LOOKING AT AFTER CHANGING DYNAMIC ROUTING FOR IT
 
   // regerence to the current message
   const docRef = doc(db, "messages", props.selectedWord.messageId);
@@ -30,7 +32,11 @@ export default function (props) {
     // determines whether to pass mediaBlobUrl from reactMediaRecorder, if false don't pass
     // prevents audioBlobUrl and AudioUrl from persisting between tab changes, this resets
     setPassAudioBlobUrl(false);
+    // resets input fields
     setAudioUrl("");
+    setSynonyms("");
+    setExamples("");
+    setExtra("");
 
     async function getCurrentWordObj() {
       const docSnap = await getDoc(docRef);
@@ -40,7 +46,6 @@ export default function (props) {
         // for each wordObj in array, if the current word matches wordObj.word
         for (let wordObj of correctedWordObjs) {
           if (wordObj.word === props.selectedTab) {
-            console.log("WORDOBJ", wordObj);
             setCurrentWordObj(wordObj);
             setSynonyms(wordObj.synonyms);
             setExamples(wordObj.examples);
@@ -50,7 +55,6 @@ export default function (props) {
             if (wordObj.forAudioRef) {
               getDownloadURL(ref(storage, `${wordObj.forAudioRef}`)).then(
                 (url) => {
-                  console.log("URL", url);
                   setAudioUrl(url);
                 }
               );
@@ -62,10 +66,6 @@ export default function (props) {
     getCurrentWordObj();
   }, [props.selectedTab]);
 
-  console.log("PASS?", passAudioBlobUrl);
-
-  console.log("AUDIO URL", audioUrl);
-
   // returns current array of word objects in FB for the message
   async function getWordArray() {
     let correctedWordObjs;
@@ -75,7 +75,6 @@ export default function (props) {
     if (docSnap.exists()) {
       correctedWordObjs = docSnap.data().words;
     }
-    console.log("GET OBJYS", correctedWordObjs);
     return correctedWordObjs;
   }
 
@@ -145,9 +144,7 @@ export default function (props) {
     const metadata = {
       //   contentType: "audio/wav",
     };
-    uploadBytes(audioRef, blob, metadata).then((snapshot) => {
-      console.log("Uploaded a blob or file!");
-    });
+    uploadBytes(audioRef, blob, metadata).then((snapshot) => {});
   }
 
   const {

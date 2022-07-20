@@ -6,6 +6,8 @@ import { db } from "./firebase-config";
 import CorrectionDropdown from "./CorrectionDropdown";
 
 export default function Message(props) {
+  // MOVED TO MAIN MESSENGER:
+
   const [isSelected, setIsSelected] = React.useState(false);
 
   function toggler() {
@@ -15,7 +17,7 @@ export default function Message(props) {
   // not sure if I should be directly changing the properties of the message obj
   // like this as it is in state.... working for now
   // also.. why use this and not just isSeleceted state directly? come back later
-  props.message.selected = isSelected;
+  // props.message.selected = isSelected;
 
   function splitMessage(message) {
     splitMessage = message.split(" ");
@@ -55,26 +57,31 @@ export default function Message(props) {
     );
   });
 
+  const currentUserMessage = props.message.uid === auth.currentUser.uid;
+
   // --------------------------------------------------------------------------------------------------
 
   return (
     <div
       className={`flex flex-col max-w-[80%] bg-green-200 border-none rounded-t-md rounded-b-md ${
-        props.message.uid !== auth.currentUser.uid ? "self-end" : "self-start"
+        currentUserMessage ? "self-end" : "self-start"
       }`}
     >
       <div
         className={`flex justify-between w-full ${
-          !props.message.selected ? "bg-sky-400" : "bg-sky-900"
-        }  rounded-md hover:cursor-pointer ${
-          props.message.uid !== auth.currentUser.uid ? "self-end" : "self-start"
-        }`}
+          !isSelected && currentUserMessage
+            ? "bg-sky-400"
+            : !isSelected
+            ? "bg-sky-200"
+            : "bg-sky-900"
+        }  rounded-md hover:cursor-pointer 
+       `}
         onClick={() => {
-          toggler(isSelected);
+          toggler();
           props.getMessageToEdit(props.message);
         }}
       >
-        {!props.message.selected ? (
+        {!isSelected ? (
           <p className="p-2">{props.message.message}</p>
         ) : (
           <div className="">{eachWord}</div>
