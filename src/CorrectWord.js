@@ -173,18 +173,6 @@ export default function (props) {
     },
   });
 
-  // React.useEffect(() => {
-  //   function clearBlob() {
-  //     console.log(clearBlobUrl);
-  //     URL.revokeObjectURL(mediaBlobUrl);
-  //   }
-  //   clearBlob();
-  //   // mediaBlobUrl = "";
-  //   console.log("CLEARED MEDIABLOB", mediaBlobUrl);
-  // }, [props.selectedTab]);
-
-  // when selected tab changes, first check if there is audioUrl, if not, set to blank
-
   // --------------------------------------AUDIO NOT RELEVANT YET -------------------------------------------------
 
   // Get a reference to the storage service, which is used to create references in your storage bucket
