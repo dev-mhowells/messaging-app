@@ -239,8 +239,10 @@ export default function (props) {
         value={examples}
       ></textarea>
       <p>Pronunciation</p>
-      <div className="h-full w-300 p-2 ">{record()}</div>
-      <p>Extra</p>
+      <div className="h-full w-300 p-2 flex justify-center items-center">
+        {record()}
+      </div>
+      <p>Extra information</p>
       <textarea
         className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none"
         onChange={handleExtra}

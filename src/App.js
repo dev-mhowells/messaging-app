@@ -2,7 +2,6 @@ import React from "react";
 import Messenger from "./Messenger.js";
 import Login from "./Login.js";
 import CorrectWord from "./CorrectMessage.js";
-import MessengerStudent from "./MessengerStudent.js";
 
 import {
   BrowserRouter as Router,
@@ -150,7 +149,7 @@ export default function App() {
         }
       ></Route>
       <Route element={<ProtectedRoutes user={user} />}>
-        <Route
+        {/* <Route
           exact
           path="/messenger/*"
           element={
@@ -160,6 +159,12 @@ export default function App() {
               <MessengerStudent logout={logout} user={user} />
             )
           }
+        />
+      </Route> */}
+        <Route
+          exact
+          path="/messenger/*"
+          element={user && <Messenger logout={logout} user={user} />}
         />
       </Route>
     </Routes>

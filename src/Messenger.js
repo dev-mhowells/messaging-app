@@ -123,11 +123,11 @@ export default function Messenger(props) {
       uid: props.user.uid,
       words: [],
     });
+    setMessage("");
   }
 
   // message to send, set to value of input
   function handleMessageChange(e) {
-    console.log(e);
     setMessage(e.target.value);
   }
 
@@ -272,8 +272,8 @@ export default function Messenger(props) {
   });
 
   return (
-    <div className="h-screen w-full flex flex-col font-poppins">
-      <div className="flex gap-10 h-[10%]">
+    <div className={`h-screen w-full flex flex-col font-poppins`}>
+      <div className="flex gap-10 h-[10%] justify-center">
         <section className="flex justify-between w-1/2 mt-4 ml-10">
           <div className="flex gap-4">
             <img
@@ -293,9 +293,11 @@ export default function Messenger(props) {
             Log out
           </button>
         </section>
-        <section className="w-2/5 flex items-end">{allTabs}</section>
+        {props.user.email === "teacher@email.com" && (
+          <section className="w-2/5 flex items-end">{allTabs}</section>
+        )}
       </div>
-      <div className="h-[90%] w-full flex gap-10">
+      <div className="h-[90%] w-full flex gap-10 justify-center">
         <section className=" h-full ml-10 w-1/2 flex flex-col justify-end gap-5 border-t-2 border-sky-700">
           <div className="p-3 flex flex-col gap-5 w-full overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-sky-700">
             {allMessages}
@@ -322,38 +324,40 @@ export default function Messenger(props) {
             </div>
           </form>
         </section>
-        <Routes>
-          <Route exact path="console">
-            <Route
-              exact
-              path="correctMessage"
-              element={
-                <CorrectMessage
-                  messageToEdit={messageToEdit}
-                  handleCorrectionChange={handleCorrectionChange}
-                  correction={correction}
-                  addCorrection={addCorrection}
-                ></CorrectMessage>
-              }
-            />
-            {selectedWords.map((word) => (
+        {props.user.email === "teacher@email.com" && (
+          <Routes>
+            <Route exact path="console">
               <Route
                 exact
-                path={`correctWord/${word.word}`}
+                path="correctMessage"
                 element={
-                  <CorrectWord
-                    selectedTab={selectedTab}
-                    selectedWord={word}
-                    messages={messages}
-                    tabReset={tabReset}
-                    removeSelectedWordFB={removeSelectedWordFB}
-                    setCorrectionTracker={setCorrectionTracker}
-                  />
+                  <CorrectMessage
+                    messageToEdit={messageToEdit}
+                    handleCorrectionChange={handleCorrectionChange}
+                    correction={correction}
+                    addCorrection={addCorrection}
+                  ></CorrectMessage>
                 }
-              ></Route>
-            ))}
-          </Route>
-        </Routes>
+              />
+              {selectedWords.map((word) => (
+                <Route
+                  exact
+                  path={`correctWord/${word.word}`}
+                  element={
+                    <CorrectWord
+                      selectedTab={selectedTab}
+                      selectedWord={word}
+                      messages={messages}
+                      tabReset={tabReset}
+                      removeSelectedWordFB={removeSelectedWordFB}
+                      setCorrectionTracker={setCorrectionTracker}
+                    />
+                  }
+                ></Route>
+              ))}
+            </Route>
+          </Routes>
+        )}
       </div>
     </div>
   );
