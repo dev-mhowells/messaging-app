@@ -1,9 +1,6 @@
 import React from "react";
-import triangle from "./images/triangle.png";
-import triangleXs from "./images/triangle-xs.png";
-import triangleXsUp from "./images/triangle-xs-up.png";
-import triangleSmall from "./images/triangle-small.png";
-import triangleSmallUp from "./images/triangle-small-up.png";
+import triangleUp from "./images/black-triangle-up.png";
+import triangleDown from "./images/black-triangle-down.png";
 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -41,7 +38,7 @@ export default function CorrectionDropdown(props) {
           {`${props.wordObj.word}`}
         </p>
         <img
-          src={dropDown ? triangleXsUp : triangleXs}
+          src={dropDown ? triangleUp : triangleDown}
           onClick={toggleDropDown}
           className="self-center mt-2 mb-2 hover:cursor-pointer"
         ></img>

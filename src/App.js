@@ -97,6 +97,36 @@ export default function App() {
     navigate("/");
   }
 
+  // ----------------------- FUCNTIONS FOR DEMO PAGE -------------------------
+
+  async function studentLogin() {
+    try {
+      const newUser = await signInWithEmailAndPassword(
+        auth,
+        "student@email.com",
+        "password"
+      );
+      console.log(newUser);
+      navigate("/messenger");
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  async function teacherLogin() {
+    try {
+      const newUser = await signInWithEmailAndPassword(
+        auth,
+        "teacher@email.com",
+        "password"
+      );
+      console.log(newUser);
+      navigate("/messenger");
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
   return (
     // <Router>
     <Routes>
@@ -106,6 +136,8 @@ export default function App() {
         path="/"
         element={
           <Login
+            studentLogin={studentLogin}
+            teacherLogin={teacherLogin}
             register={register}
             login={login}
             logout={logout}
@@ -122,7 +154,7 @@ export default function App() {
           exact
           path="/messenger/*"
           element={
-            user.email === "email@email.com" ? (
+            user && user.email === "teacher@email.com" ? (
               <Messenger logout={logout} user={user} />
             ) : (
               <MessengerStudent logout={logout} user={user} />

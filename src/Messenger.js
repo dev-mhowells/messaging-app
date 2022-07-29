@@ -27,6 +27,9 @@ import {
 } from "react-router-dom";
 // import { Translate } from "@google-cloud/translate/build/src/v2"; // THIS CAUSES ERROR WITH INSTALL FILES
 
+import teacher from "./images/teacher.png";
+import student from "./images/student.png";
+
 export default function Messenger(props) {
   const messagesCollectionRef = collection(db, "messages");
   const q = query(messagesCollectionRef, orderBy("createdAt", "asc"));
@@ -35,7 +38,11 @@ export default function Messenger(props) {
   const [message, setMessage] = React.useState(""); // value of messaging input
 
   const [messageToEdit, setMessageToEdit] = React.useState({}); // message to edit object
+
+  // state used in correctMessage to be submitted
   const [correction, setCorrection] = React.useState(""); // value of correction textarea input in correctMessage
+  const [explanation, setExplanation] = React.useState(""); // value of correction textarea input in correctMessage
+  const [examples, setExamples] = React.useState(""); // value of correction textarea input in correctMessage
 
   const [selectedWords, setSelectedWords] = React.useState([]); // words selected by learner, array of objects, keys: word, messageId
 
@@ -135,6 +142,16 @@ export default function Messenger(props) {
   // sets correction to the value of the correction textarea field in CorrectMessage.js
   function handleCorrectionChange(e) {
     setCorrection(e.target.value);
+  }
+
+  // sets correction to the value of the correction textarea field in CorrectMessage.js
+  function handleExplanationChange(e) {
+    setExplanation(e.target.value);
+  }
+
+  // sets correction to the value of the correction textarea field in CorrectMessage.js
+  function handleExamplesChange(e) {
+    setExamples(e.target.value);
   }
 
   // adds correction text as property to corresponding message object in firebase
@@ -259,12 +276,18 @@ export default function Messenger(props) {
       <div className="flex gap-10 h-[10%]">
         <section className="flex justify-between w-1/2 mt-4 ml-10">
           <div className="flex gap-4">
-            <div className="rounded-full h-[90%] aspect-square bg-sky-900 mb-4"></div>
+            <img
+              className="rounded-full h-[90%] aspect-square bg-sky-900 mb-4"
+              src={teacher}
+            ></img>
             <h2 className="mt-1">Teacher</h2>
           </div>
           <div className="flex gap-4">
             <h2 className="self-end mb-2">Student</h2>
-            <div className="rounded-full h-[90%] aspect-square bg-sky-900"></div>
+            <img
+              className="rounded-full h-[90%] aspect-square bg-sky-900"
+              src={student}
+            ></img>
           </div>
           <button className="py-2 px-4 bg-sky-100" onClick={props.logout}>
             Log out

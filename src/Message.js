@@ -88,7 +88,9 @@ export default function Message(props) {
         )}
       </div>
       {props.message.correction && (
-        <p className="p-2">{props.message.correction}</p>
+        <p className="p-2 bg-red-400 border-none rounded-b-md">
+          {props.message.correction}
+        </p>
       )}
       {props.message.words &&
         props.message.words.map((wordObj) => (
