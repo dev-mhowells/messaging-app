@@ -273,8 +273,8 @@ export default function Messenger(props) {
 
   return (
     <div className={`h-screen w-full flex flex-col font-poppins`}>
-      <div className="flex gap-10 h-[10%] justify-center">
-        <section className="flex justify-between w-1/2 mt-4 ml-10">
+      <div className={`flex gap-10 h-[10%] justify-center`}>
+        <section className="flex justify-between w-full mt-4 ml-1 mr-1 md:ml-4 md:w-1/2">
           <div className="flex gap-4">
             <img
               className="rounded-full h-[90%] aspect-square bg-sky-900 mb-4"
@@ -298,7 +298,7 @@ export default function Messenger(props) {
         )}
       </div>
       <div className="h-[90%] w-full flex gap-10 justify-center">
-        <section className=" h-full ml-10 w-1/2 flex flex-col justify-end gap-5 border-t-2 border-sky-700">
+        <section className=" h-full ml-1 mr-1 md:ml-4 w-full md:w-1/2 flex flex-col justify-end gap-5 border-t-2 border-sky-700">
           <div className="p-3 flex flex-col gap-5 w-full overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-sky-700">
             {allMessages}
             <div ref={messagesBottom}></div>
