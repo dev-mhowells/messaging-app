@@ -200,6 +200,8 @@ export default function (props) {
         <audio
           src={mediaBlobUrl && passAudioBlobUrl ? mediaBlobUrl : audioUrl}
           controls
+          autoPlay={false}
+          loop={false}
         />
       </div>
     );

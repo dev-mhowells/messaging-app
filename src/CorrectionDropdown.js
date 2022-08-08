@@ -66,7 +66,7 @@ export default function CorrectionDropdown(props) {
           {audioUrl && (
             <div className=" ml-2 mr-2 ">
               <i>pronunciation:</i>
-              <audio src={audioUrl} controls loop />
+              <audio src={audioUrl} controls autoPlay={false} loop={false} />
             </div>
           )}
         </div>
