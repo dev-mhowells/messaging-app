@@ -5,7 +5,6 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import recordImg from "./images/record.png";
 import stopImg from "./images/stop.png";
 
-import sampleSound from "./media/birds.mp3";
 import { useReactMediaRecorder } from "react-media-recorder";
 
 export default function (props) {
@@ -20,7 +19,7 @@ export default function (props) {
 
   // ----------------------- -----------------------
 
-  // THIS COMPONENTS NEEDS LOOKING AT AFTER CHANGING DYNAMIC ROUTING FOR IT
+  // THIS COMPONENT NEEDS LOOKING AT AFTER CHANGING FROM ROUTING APPROACH!!
 
   // regerence to the current message
   const docRef = doc(db, "messages", props.selectedWord.messageId);
@@ -163,8 +162,6 @@ export default function (props) {
       setAudioUrl("");
     },
     onStop: (blobUrl, blob) => {
-      // console.log("onstop happened", console.log(mediaBlobUrl));
-      // setAudioUrl(mediaBlobUrl);
       // once audio is recorded in a tab, it is immediately set to the audio inside the in-tab audioplayer
       // this is a control which allows it to be passed, and is turned off on tab change to prevent
       // thi saudio from persisting between tabs.
@@ -196,7 +193,7 @@ export default function (props) {
           onClick={status === "recording" ? stopRecording : startRecording}
           src={status !== "recording" ? recordImg : stopImg}
         ></img>
-        {/* <audio src={audioUrl ? audioUrl : mediaBlobUrl} controls /> */}
+
         <audio
           src={mediaBlobUrl && passAudioBlobUrl ? mediaBlobUrl : audioUrl}
           controls
@@ -257,7 +254,7 @@ export default function (props) {
           updateTracker();
           updateWordObjArr();
           // controls tab redirects
-          // props.removeTab(props.selectedWord.word);
+
           props.removeSelectedWordFB(props.selectedWord);
           props.tabReset(props.selectedWord.word);
           clearInputs();

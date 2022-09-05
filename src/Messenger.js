@@ -16,15 +16,7 @@ import {
   arrayRemove,
 } from "firebase/firestore";
 import { db } from "./firebase-config";
-// import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  useNavigate,
-} from "react-router-dom";
 // import { Translate } from "@google-cloud/translate/build/src/v2"; // THIS CAUSES ERROR WITH INSTALL FILES
 
 import teacher from "./images/teacher.png";
@@ -49,14 +41,7 @@ export default function Messenger(props) {
   // changed by correctWord to random value and used by useEffect in correction dropdown to trigger calling for audioUrls
   const [correctionTracker, setCorrectionTracker] = React.useState("");
 
-  // moved from message.js
-  // const [isSelected, setIsSelected] = React.useState(false);
-
-  // function toggler() {
-  //   setIsSelected((prevIsSelected) => !prevIsSelected);
-  // }
-
-  // --------------------------------------- TRANSLATE-------------------------------------------
+  // --------------------------------------- TRANSLATE NOT YET IMPLEMENTED -------------------------------------------
 
   // // Imports the Google Cloud client library
   // const { Translate } = require("@google-cloud/translate").v2;
@@ -166,8 +151,10 @@ export default function Messenger(props) {
   const [selectedTab, setSelectedTab] = React.useState("");
 
   // sets value of selected tab when clicking on tab
+  // was set as .value before, now need innerText
   function getSelectedTab(e) {
-    setSelectedTab(e.target.text);
+    setSelectedTab(e.target.innerText);
+    console.log("CLICKED VALUE", e.target.innerText);
   }
 
   // removes whatever is passed in from the selected words array in Firebase
@@ -177,10 +164,7 @@ export default function Messenger(props) {
     await updateDoc(selectedWordsRef, { words: arrayRemove(wordObj) });
   }
 
-  const navigate = useNavigate();
-
   React.useEffect(() => {
-    navigate("console/correctMessage");
     setSelectedTab("Message");
   }, []);
 
@@ -203,17 +187,14 @@ export default function Messenger(props) {
             : selectedWords[index - 1].word;
         // changes tab colour
         setSelectedTab(newTab);
-        // redirects
-        navigate(`console/correctWord/${newTab}`);
       } else {
         // if only one tab left
-        navigate("console/correctMessage");
         setSelectedTab("Message");
       }
     }
   }
+  // ---------------------------------
 
-  // creates all word tabs
   const allSelectedWords = selectedWords.map((wordObj) => {
     return (
       <div
@@ -221,12 +202,7 @@ export default function Messenger(props) {
           wordObj.word === selectedTab ? "bg-sky-700" : "bg-sky-400"
         } hover:bg-sky-900 text-white py-1 px-2 rounded-t-md flex gap-1`}
       >
-        <Link
-          to={`console/correctWord/${wordObj.word}`}
-          onClick={getSelectedTab}
-        >
-          {wordObj.word}
-        </Link>
+        <p onClick={getSelectedTab}>{wordObj.word}</p>
         <img
           onClick={() => {
             removeSelectedWordFB(wordObj);
@@ -239,17 +215,16 @@ export default function Messenger(props) {
     );
   });
 
-  // tab for editing full message - always present
+  // onclick gets clicked text value and sets selectedTab value
   const messageTab = messageToEdit && (
-    <Link
-      to={`console/correctMessage`}
+    <p
       className={`${
         selectedTab === "Message" ? "bg-sky-700" : "bg-sky-400"
       } hover:bg-sky-900 text-white py-1 px-2 rounded-t-md`}
       onClick={getSelectedTab}
     >
       Message
-    </Link>
+    </p>
   );
 
   // array used for actually displaying tabs
@@ -264,9 +239,6 @@ export default function Messenger(props) {
         getMessageToEdit={getMessageToEdit}
         message={message}
         correctionTracker={correctionTracker}
-        // added
-        // toggler={toggler}
-        // isSelected={isSelected}
       />
     );
   });
@@ -324,40 +296,31 @@ export default function Messenger(props) {
             </div>
           </form>
         </section>
-        {props.user.email === "teacher@email.com" && (
-          <Routes>
-            <Route exact path="console">
-              <Route
-                exact
-                path="correctMessage"
-                element={
-                  <CorrectMessage
-                    messageToEdit={messageToEdit}
-                    handleCorrectionChange={handleCorrectionChange}
-                    correction={correction}
-                    addCorrection={addCorrection}
-                  ></CorrectMessage>
-                }
-              />
-              {selectedWords.map((word) => (
-                <Route
-                  exact
-                  path={`correctWord/${word.word}`}
-                  element={
-                    <CorrectWord
-                      selectedTab={selectedTab}
-                      selectedWord={word}
-                      messages={messages}
-                      tabReset={tabReset}
-                      removeSelectedWordFB={removeSelectedWordFB}
-                      setCorrectionTracker={setCorrectionTracker}
-                    />
-                  }
-                ></Route>
-              ))}
-            </Route>
-          </Routes>
-        )}
+        {props.user.email === "teacher@email.com" &&
+          selectedTab === "Message" && (
+            <CorrectMessage
+              messageToEdit={messageToEdit}
+              handleCorrectionChange={handleCorrectionChange}
+              correction={correction}
+              addCorrection={addCorrection}
+            ></CorrectMessage>
+          )}
+        {props.user.email === "teacher@email.com" &&
+          selectedTab !== "Message" &&
+          selectedWords.map((word) => {
+            console.log("WORD", word);
+            if (word.word === selectedTab)
+              return (
+                <CorrectWord
+                  selectedTab={selectedTab}
+                  selectedWord={word}
+                  messages={messages}
+                  tabReset={tabReset}
+                  removeSelectedWordFB={removeSelectedWordFB}
+                  setCorrectionTracker={setCorrectionTracker}
+                />
+              );
+          })}
       </div>
     </div>
   );

@@ -16,10 +16,6 @@ export default function CorrectMessage(props) {
       >
         {props.correction}
       </textarea>
-      {/* <p>Explanation (optional)</p>
-      <textarea className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none"></textarea>
-      <p>Examples (optional)</p>
-      <textarea className="h-full w-300 p-2 border-2 border-sky-700 rounded-md resize-none focus:outline-none"></textarea> */}
       <button
         className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4 border-none rounded-md w-1/3 self-end mb-4"
         onClick={() => props.addCorrection()}

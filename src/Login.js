@@ -67,29 +67,6 @@ export default function Login(props) {
         <p>View as:</p>
       </div>
       <div className="flex w-full justify-center items-center gap-10 mt-10">
-        {/* <div className="flex flex-col gap-3">
-          <h2>Register</h2>
-          <label>email</label>
-          <input
-            className="border border-sky-300"
-            onChange={(e) => {
-              props.setRegEmail(e.target.value);
-            }}
-          ></input>
-          <label>password</label>
-          <input
-            className="border border-sky-300"
-            onChange={(e) => {
-              props.setRegPass(e.target.value);
-            }}
-          ></input>
-          <button
-            className="bg-sky-200 py-2 px-4"
-            onClick={() => props.register()}
-          >
-            register
-          </button>
-        </div> */}
         <div className="flex flex-col gap-3 font-poppins">
           <button className="bg-sky-200 py-2 px-4" onClick={props.studentLogin}>
             student

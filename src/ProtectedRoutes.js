@@ -6,6 +6,6 @@ import Messenger from "./Messenger";
 // need to specify outlet here, not the name of the component (Messenger) otherwise
 // props don't pass.
 export default function ProtectedRoutes(props) {
-  console.log("USER STATE IN PROTECTED ROUTE", props.user);
+
   return props.user ? <Outlet /> : <Navigate to="/" />;
 }
