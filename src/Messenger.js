@@ -17,7 +17,7 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase-config";
 
-// import { Translate } from "@google-cloud/translate/build/src/v2"; // THIS CAUSES ERROR WITH INSTALL FILES
+// import { Translate } from "@google-cloud/translate/build/src/v2"; // CURRENTLY CAUSING ERROR WITH INSTALL FILES
 
 import teacher from "./images/teacher.png";
 import student from "./images/student.png";
@@ -41,8 +41,9 @@ export default function Messenger(props) {
   // changed by correctWord to random value and used by useEffect in correction dropdown to trigger calling for audioUrls
   const [correctionTracker, setCorrectionTracker] = React.useState("");
 
-  // --------------------------------------- TRANSLATE NOT YET IMPLEMENTED -------------------------------------------
+  // --------------------------------------- GOOGLE TRANSLATION FEATURE NOT YET IMPLEMENTED -------------------------------------------
 
+  // CODE TO BUILD UPON:
   // // Imports the Google Cloud client library
   // const { Translate } = require("@google-cloud/translate").v2;
 
@@ -82,15 +83,12 @@ export default function Messenger(props) {
         return {
           ...doc.data(),
           id: doc.id,
-          // this was previously changed in Message.js but seems redundant
-          // selected: false,
         };
       });
       setMessages(allMessages);
     });
 
     // updates selected words automatically on change in array at firebase level
-    // using same format as above not working for some reason, but this does:
     const wordsSnap = onSnapshot(
       doc(db, "selectedWords", "wordsArr"),
       (doc) => {
@@ -154,7 +152,6 @@ export default function Messenger(props) {
   // was set as .value before, now need innerText
   function getSelectedTab(e) {
     setSelectedTab(e.target.innerText);
-    console.log("CLICKED VALUE", e.target.innerText);
   }
 
   // removes whatever is passed in from the selected words array in Firebase
@@ -285,10 +282,6 @@ export default function Messenger(props) {
               <h2 className="py-2 px-4 bg-sky-100 h-10">30:00</h2>
               <button
                 className="bg-sky-700 hover:bg-sky-900 text-white py-2 px-4 h-10 w-1/3 self-end rounded-md mb-4"
-                // onClick={() => {
-                //   createMessage();
-                //   setMessage("");
-                // }}
                 type="submit"
               >
                 send
