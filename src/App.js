@@ -1,18 +1,9 @@
 import React from "react";
 import Messenger from "./Messenger.js";
 import Login from "./Login.js";
-import CorrectWord from "./CorrectMessage.js";
 
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Outlet,
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
-// import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
-// import { auth, provider } from "./firebase-config.js";
 
 import {
   createUserWithEmailAndPassword,
@@ -22,23 +13,6 @@ import {
 } from "firebase/auth";
 import { auth } from "./firebase-config";
 import ProtectedRoutes from "./ProtectedRoutes.js";
-
-// --------------------------- GOOGLE LOGIN ----------------------------//
-
-// function googleSignIn() {
-//   signInWithPopup(auth, provider).then((result) => {
-//     // The signed-in user info.
-//     const user = result.user;
-//   });
-// }
-
-// export default function App() {
-//   // authstatechange sets userIn on log in and log out
-//   const [user, setUser] = React.useState({});
-
-//   onAuthStateChanged(auth, (user) => {
-//     setUser(user);
-//   });
 
 // ---------------------------- CUSTOM LOGIN ---------------------------//
 
@@ -51,15 +25,14 @@ export default function App() {
 
   let navigate = useNavigate();
 
-  // console.log(user);
-
   React.useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      // user && navigate("messenger");
     });
   }, []);
 
+  // REGISTER AND LOGIN FUNCTIONS NOT CURRENTLY USED BY DEMO VERSION
+  // KEPT HERE TO EXPAND ON LATER
   async function register() {
     try {
       const newUser = await createUserWithEmailAndPassword(
@@ -92,20 +65,15 @@ export default function App() {
     await signOut(auth);
     setLoginEmail("");
     setLoginPass("");
-    console.log("logged out", user);
     navigate("/");
   }
 
-  // ----------------------- FUCNTIONS FOR DEMO PAGE -------------------------
+  // ----------------------- AUTH FUCNTIONS FOR DEMO PAGE ------------------------- //
 
+  // HARDCODED LOGIN CREDENTIALS FOR APP DEMO
   async function studentLogin() {
     try {
-      const newUser = await signInWithEmailAndPassword(
-        auth,
-        "student@email.com",
-        "password"
-      );
-      console.log(newUser);
+      await signInWithEmailAndPassword(auth, "student@email.com", "password");
       navigate("/messenger");
     } catch (error) {
       console.log(error.message);
@@ -114,12 +82,7 @@ export default function App() {
 
   async function teacherLogin() {
     try {
-      const newUser = await signInWithEmailAndPassword(
-        auth,
-        "teacher@email.com",
-        "password"
-      );
-      console.log(newUser);
+      await signInWithEmailAndPassword(auth, "teacher@email.com", "password");
       navigate("/messenger");
     } catch (error) {
       console.log(error.message);
@@ -127,7 +90,6 @@ export default function App() {
   }
 
   return (
-    // <Router>
     <Routes>
       <Route
         className="bg-white flex flex-col items-center justify-center h-screen"
@@ -149,18 +111,6 @@ export default function App() {
         }
       ></Route>
       <Route element={<ProtectedRoutes user={user} />}>
-        {/* <Route
-          exact
-          path="/messenger/*"
-          element={
-            user && user.email === "teacher@email.com" ? (
-              <Messenger logout={logout} user={user} />
-            ) : (
-              <MessengerStudent logout={logout} user={user} />
-            )
-          }
-        />
-      </Route> */}
         <Route
           exact
           path="/messenger/*"
