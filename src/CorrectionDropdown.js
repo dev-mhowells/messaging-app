@@ -2,7 +2,7 @@ import React from "react";
 import triangleUp from "./images/black-triangle-up.png";
 import triangleDown from "./images/black-triangle-down.png";
 
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 export default function CorrectionDropdown(props) {
   const [dropDown, setDropDown] = React.useState(false);
@@ -14,15 +14,15 @@ export default function CorrectionDropdown(props) {
 
   const storage = getStorage();
 
-  // in useeffect to prevent a bunch of calls on rerender of any parent elements
-  // uses correctiontracker state which is updated with a random value on every word correction submit
+  // NOTE: Temporary solution:
+  // in useeffect to prevent a bunch of calls on re-render of any parent elements
+  // uses correctiontracker state which is updated with a new value on correction submit
   // therefore only called on initial render and when an audio value is changed.
   React.useEffect(() => {
     function getAudio() {
       if (props.wordObj.forAudioRef) {
         getDownloadURL(ref(storage, `${props.wordObj.forAudioRef}`)).then(
           (url) => {
-            console.log("URL", url);
             setAudioUrl(url);
           }
         );
