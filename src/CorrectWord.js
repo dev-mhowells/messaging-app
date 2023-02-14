@@ -17,11 +17,7 @@ export default function (props) {
   const [currentWordObj, setCurrentWordObj] = React.useState({});
   const [passAudioBlobUrl, setPassAudioBlobUrl] = React.useState(false);
 
-  // ----------------------- -----------------------
-
-  // THIS COMPONENT NEEDS LOOKING AT AFTER CHANGING FROM ROUTING APPROACH!!
-
-  // regerence to the current message
+  // reference to the current message
   const docRef = doc(db, "messages", props.selectedWord.messageId);
 
   // finds the current word object associated with word of this tab in FB array of words for this message
@@ -146,37 +142,25 @@ export default function (props) {
     uploadBytes(audioRef, blob, metadata).then((snapshot) => {});
   }
 
-  const {
-    status,
-    startRecording,
-    stopRecording,
-    mediaBlobUrl,
-    onStop,
-    clearBlobUrl,
-  } = useReactMediaRecorder({
-    audio: true,
-    type: "audio/wav",
-    onStart: () => {
-      // reset control display with no audio - only useful if using AudioBlob state in console display!
-      // props.setAudioBlob("");
-      setAudioUrl("");
-    },
-    onStop: (blobUrl, blob) => {
-      // once audio is recorded in a tab, it is immediately set to the audio inside the in-tab audioplayer
-      // this is a control which allows it to be passed, and is turned off on tab change to prevent
-      // thi saudio from persisting between tabs.
-      setPassAudioBlobUrl(true);
-      uploadAudio(blob);
-    },
-  });
-
-  // --------------------------------------AUDIO NOT RELEVANT YET -------------------------------------------------
+  const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
+    useReactMediaRecorder({
+      audio: true,
+      type: "audio/wav",
+      onStart: () => {
+        // reset control display with no audio - only useful if using AudioBlob state in console display!
+        setAudioUrl("");
+      },
+      onStop: (blobUrl, blob) => {
+        // once audio is recorded in a tab, it is immediately set to the audio inside the in-tab audioplayer
+        // this is a control which allows it to be passed, and is turned off on tab change to prevent
+        // this audio from persisting between tabs.
+        setPassAudioBlobUrl(true);
+        uploadAudio(blob);
+      },
+    });
 
   // Get a reference to the storage service, which is used to create references in your storage bucket
   const storage = getStorage();
-
-  // Create a storage reference from our storage service
-  const storageRef = ref(storage);
 
   // Create a child reference as messageId
   const audioRef = ref(
@@ -207,7 +191,6 @@ export default function (props) {
   // ---------------------------------------------- CORE -----------------------------------------------------------
 
   //   object sent to firebase.. might not need messageId
-  // BLOB URL ARE JUST ATTEMPTS TO COMMUNICATE TO MESSAGE.JS THAT THERE IS AUDIO -- NOT CURRENTLY IN USE
   const wordExplained = {
     messageId: props.selectedWord.messageId,
     word: props.selectedWord.word,
@@ -217,8 +200,9 @@ export default function (props) {
     forAudioRef: `${props.selectedWord.messageId}/${props.selectedWord.word}`,
   };
 
+  // Temporary solution:
   // sets tracker to a random number, useEffect in correctionDropdown set to run when
-  // this value changes, then calls for audio - seems like a strange solution..
+  // this value changes, then calls for audio.
   function updateTracker() {
     props.setCorrectionTracker(Math.random() * 100);
   }

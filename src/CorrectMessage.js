@@ -1,7 +1,5 @@
 import React from "react";
 
-// commented out correction options may be properly implemented in later iterations
-
 export default function CorrectMessage(props) {
   return (
     <section className=" w-2/5 h-1/2 flex flex-col gap-4 border-t-2 border-sky-700 text-xs">
