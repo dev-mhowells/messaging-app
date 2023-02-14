@@ -301,7 +301,6 @@ export default function Messenger(props) {
         {props.user.email === "teacher@email.com" &&
           selectedTab !== "Message" &&
           selectedWords.map((word) => {
-            console.log("WORD", word);
             if (word.word === selectedTab)
               return (
                 <CorrectWord

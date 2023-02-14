@@ -1,23 +1,16 @@
 import React from "react";
 import { auth } from "./firebase-config";
-import { doc, setDoc, arrayUnion, updateDoc } from "firebase/firestore";
+import { doc, arrayUnion, updateDoc } from "firebase/firestore";
 import { db } from "./firebase-config";
 
 import CorrectionDropdown from "./CorrectionDropdown";
 
 export default function Message(props) {
-  // MOVED TO MAIN MESSENGER:
-
   const [isSelected, setIsSelected] = React.useState(false);
 
   function toggler() {
     setIsSelected((prevIsSelected) => !prevIsSelected);
   }
-
-  // not sure if I should be directly changing the properties of the message obj
-  // like this as it is in state.... working for now
-  // also.. why use this and not just isSeleceted state directly? come back later
-  // props.message.selected = isSelected;
 
   function splitMessage(message) {
     splitMessage = message.split(" ");
@@ -36,12 +29,10 @@ export default function Message(props) {
   // REFINE THIS FUNCTION SO THAT REPLACES 'S WITH EMPTY STRING
   function removeWordFormatting(word) {
     let onlyLetters = word.replace(/[^0-9a-z]/gi, "");
-    // onlyLetters.replace(/[']s/gi, "");
     return onlyLetters.toLowerCase();
   }
 
   const eachWord = splitIntoWords.map((word) => {
-    // console.log("DEFORMATTED", removeWordFormatting(word));
     return (
       <button
         className="bg-sky-50 py-1 px-2 ml-2 rounded-md text-sm mr-2 mt-2 mb-2 hover:bg-sky-300"
