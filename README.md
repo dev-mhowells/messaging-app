@@ -1,70 +1,19 @@
-# Getting Started with Create React App
+# Language correction messenger
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Summary
 
-## Available Scripts
+With more and more learning taking place online, I wanted to create a way for language learners to have conversations with teachers online through a messenger which was specifically designed to enable corrections and learning opportunities which could be seamlessly integrated into the conversation.
 
-In the project directory, you can run:
+## Technology
 
-### `npm start`
+I chose to use Tailwind primarily with the aim of spending less time on the design process and responsiveness in order to prioritise time spent on the functionality of the app. React was used because of the number of reusable components there would be in the app, from dynamically created tab components, to the messages themselves. Firebase was used on the back-end as the project required authentication, a database, as well as storage for audio files. Firebase allowed for easy integration of all these features, as well as hosting.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Challenges and Improvements
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+One of the biggest challenges I had with this project was working with audio. One such challenge was in regard to appending audio to messages which had already been created and rendered in the messenger. Ultimately the solution was simply to store the audio files in folders which served as references to individual messages. I did however encounter some stumbling blocks related to audio blobs and audio URLs which took longer than they should have to resolve. Sometimes it is easy to get caught up in the enthusiasm to just get things to work, where in fact it is often a better use of time to take a step back and learn a little more about the technology you are using before getting started with it.
 
-### `npm test`
+I consider the application very much a work in progress and I intend to keep coming back to it to make improvements and add new features. Firstly, my solution to dynamically creating tabbed components does not use dynamic routing, which I’m now quite sure would be a better way of implementing such a feature. In terms of UX, clicking elsewhere in the messenger should deselect previously selected messages, and student users should receive clear feedback that words they have selected have been highlighted for the teacher. There are also a number of other features which I feel would benefit the application, but for now will be focussing on polishing it up and getting some feedback from potential users.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Lessons learned
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project has further highlighted to me the importance of organisation and planning ahead where possible. This may be especially true of React apps where consideration must be given to the flow of information between components. No doubt being able to adapt to the evolution of a project is an important skill, but looking back on the project, I feel as though I could have saved quite a lot of time if I had started with a clearer vision of exactly how the project should have been organised.
