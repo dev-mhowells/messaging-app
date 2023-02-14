@@ -1,6 +1,6 @@
 import React from "react";
 import Messenger from "./Messenger.js";
-import Login from "./Login.js";
+import DemoLogin from "./DemoLogin.js";
 
 import { Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -96,7 +96,7 @@ export default function App() {
         exact
         path="/"
         element={
-          <Login
+          <DemoLogin
             studentLogin={studentLogin}
             teacherLogin={teacherLogin}
             register={register}
